@@ -98,10 +98,22 @@ Tree Insert(Tree T,char *father,char *name,Date birth,bool marriage,char *addres
 }
 
 //关系溯源（输入两人姓名，确定其关系）
+char* Relation(Tree T,char *name1,char *name2){
+    //报错
+}
 
-//修改成员信息（先查询，再修改）
+//修改成员信息(输入为要修改的节点以及全部信息，返回值为该节点)
+Tree Modify(Tree T,char* name,Date birth,bool marriage,char *address,bool alive,Date death){
+    T->name=name;
+    T->birth=birth;
+    T->marriage=marriage;
+    T->address=address;
+    T->alive=alive;
+    T->death=death;
+    return T;
+}
+//按出生日期对所有成员排序(最大堆排序)(返回值字符串)
 
-//按出生日期对所有成员排序
 
 //提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）)
 
