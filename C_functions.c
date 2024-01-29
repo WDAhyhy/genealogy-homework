@@ -38,11 +38,64 @@ Tree CreateTNode(char *name,Date birth,bool marriage,char *address,bool alive,Da
     T->address=address;
     T->alive=alive;
     T->death=death;
+    T->subbro=NULL;
+    T->child=NULL;
     return T;
 }
-//成员插入(返回值为树的第一个节点)
 
 //成员查询(通过姓名或者出生日期查询)
+Tree SearchByName(Tree T,char *name){
+    if(!T){
+        return NULL;
+    }
+    if(T->name==name){
+        return T;
+    }
+    else{
+        if(SearchByName(T->child,name))
+            return (SearchByName(T->child,name));
+        if(SearchByName(T->subbro,name))
+            return (SearchByName(T->subbro,name));
+        return NULL;
+    }
+}
+Tree SearchByBirth(Tree T,Date birth){
+    if(!T){
+        return NULL;
+    }
+    if(T->birth->year==birth->year&&T->birth->month==birth->month&&T->birth->day==birth->day){
+        return T;
+    }
+    else{
+        if(SearchByBirth(T->child,birth))
+            return(SearchByBirth(T->child,birth));
+        if(SearchByBirth(T->subbro,birth))
+            return(SearchByBirth(T->child,birth));
+        return NULL;
+    }
+}
+//成员插入(返回值为树的第一个节点)(以其父节点进行查找插入)
+Tree Insert(Tree T,char *father,char *name,Date birth,bool marriage,char *address,bool alive,Date death){
+    Tree fathT,broT;
+    //报错
+    if(T&&father=="")
+        return NULL;
+    Tree newT=CreateTNode(name,birth,marriage,address,alive,death);
+    if(father!=""){
+        fathT=SearchByName(T,father);
+        if(!fathT->child)
+            fathT->child=newT;
+        else{
+            broT=fathT->child;
+            while(broT->subbro)
+                broT=broT->subbro;
+            broT->subbro=newT;
+        }
+    }
+    else
+        T=newT;
+    return T;
+}
 
 //关系溯源（输入两人姓名，确定其关系）
 
