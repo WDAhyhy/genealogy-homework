@@ -112,8 +112,10 @@ Tree Modify(Tree T,char* name,Date birth,bool marriage,char *address,bool alive,
     T->death=death;
     return T;
 }
-//按出生日期对所有成员排序(最大堆排序)(返回值字符串)
+//按出生日期对所有成员排序(利用队列排序)(返回值字符串)
+char* SortByBirth(){
 
+}
 
 //提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）)
 
