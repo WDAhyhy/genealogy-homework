@@ -112,8 +112,37 @@ Tree Modify(Tree T,char* name,Date birth,bool marriage,char *address,bool alive,
     T->death=death;
     return T;
 }
-//按出生日期对所有成员排序(利用队列排序)(返回值字符串)
-char* SortByBirth(){
+//计算族谱人数总数
+int Count(Tree T){
+    int num=0;
+    if(!T)
+        return 0;
+    return Count(T->subbro)+Count(T->child)+1;
+}
+//将树存进数组准备排序
+Tree *AddInArry(Tree T,Tree *arry,int index,int num){
+    Tree *arry2;
+    if(!T)
+        return NULL;
+    arry[index]=T;
+    arry2=AddInArry(T->subbro,arry,++index,num);
+    if(arry2){
+        arry=arry2;
+        index++;
+    }
+    arry2=AddInArry(T->child,arry,index,num);
+    if(arry2)
+        arry=arry2;
+    return arry;
+}
+//按出生日期对所有成员排序(返回值字符串)
+char* SortByBirth(Tree T){
+    char* str="";
+    int num=Count(T);
+    Tree *Sortarry=(Tree*)malloc(num*sizeof(Tree));
+    Sortarry=AddInArry(T,Sortarry,0,num);
+
+    
 
 }
 
