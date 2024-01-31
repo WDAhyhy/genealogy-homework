@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include<string.h>
 //下面的头文件为JNI虚拟机，调试时可以注释掉
 // #include<jni>
 
@@ -8,9 +9,6 @@
 typedef struct TNode* Tree;
 typedef struct Time* Date;
 /*这是一个函数库，通过C语言进行主要函数的构建，再通过java的GUI进行图形化界面的交互*/
-
-
-
 
 
 struct Time{
@@ -135,18 +133,67 @@ Tree *AddInArry(Tree T,Tree *arry,int index,int num){
         arry=arry2;
     return arry;
 }
+//交换
+void Swarp(Tree* T1,Tree* T2){
+    Tree T3=*T1;
+    *T1=*T2;
+    *T2=T3;
+}
 //按出生日期对所有成员排序(返回值字符串)
 char* SortByBirth(Tree T){
-    char* str="";
+    int i,j;
     int num=Count(T);
+    char *str=(char*)malloc(4*num*sizeof(char));
     Tree *Sortarry=(Tree*)malloc(num*sizeof(Tree));
     Sortarry=AddInArry(T,Sortarry,0,num);
-
-    
-
+    //简单选择排序
+    for(i=0;i<num;i++){
+        for(j=i;j<num;j++){
+            if(Sortarry[i]->birth->year>Sortarry[j]->birth->year)
+                Swarp(Sortarry[i],Sortarry[j]);
+            else if(Sortarry[i]->birth->year==Sortarry[j]->birth->year){
+                if(Sortarry[i]->birth->month>Sortarry[j]->birth->month)
+                    Swarp(Sortarry[i],Sortarry[j]);
+                else if(Sortarry[i]->birth->month==Sortarry[j]->birth->month){
+                    if(Sortarry[i]->birth->day>Sortarry[j]->birth->day)
+                        Swarp(Sortarry[i],Sortarry[j]);
+                }
+            }
+        }
+    }
+    //对字符串进行处理
+    strcpy(str,Sortarry[0]->name);
+    for(i=1;i<num;i++){
+        strcat(str," ");
+        strcat(str,Sortarry[i]->name);
+    }
+    return str;
 }
-
+//修改当前日期
+Date ModifyDate(Date date,int year,int month,int day){
+    date->year=year;
+    date->month=month;
+    date->day=day;
+    return date;
+}
+Tree CheckBirth(Tree T,Date date){
+    Tree T1;
+    if(!T)
+        return NULL;
+    if(T->birth->day==date->day&&T->birth->month==date->month)
+        return T;
+    else{
+        T1=CheckBirth(T->child,date);
+        if(T1)
+            return T1;
+        T1=CheckBirth(T->subbro,date);
+        if(T1)
+            return T1;
+        return NULL;
+    }
+}
 //提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）)
-
-//修改当前日期(因为要实现上个函数)
+char* RemindBirth(Tree T,Date date){
+    return CheckBirth(T,date)->name;
+}
 
