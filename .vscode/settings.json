@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "C_To_Java.C": "cpp"
+    }
+}
