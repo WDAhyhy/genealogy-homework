@@ -124,7 +124,8 @@ Tree Insert(Tree T,char *father,char *name,int byear,int bmonth,int bday,bool ma
     return T;
 }
 
-//关系溯源（输入两人姓名，确定其关系）
+//关系溯源（输入两人姓名，确定其关系）  
+//家谱树已经通过出生日期排序，修改为通过深度确定辈分，下标确定年龄
 char* Relation(Tree T, char* name1, char* name2) {
     Tree Person1 = (Tree)malloc(sizeof(struct TNode));
     Tree Person2 = (Tree)malloc(sizeof(struct TNode));
@@ -277,7 +278,7 @@ Tree *AddInArry(Tree T,Tree *arry,int index,int num){
     return arry;
 }
 //交换
-void Swarp(Tree* T1,Tree* T2){
+void Swap(Tree* T1,Tree* T2){
     Tree T3=*T1;
     *T1=*T2;
     *T2=T3;
@@ -293,13 +294,13 @@ char* SortByBirth(Tree T){
     for(i=0;i<num;i++){
         for(j=i;j<num;j++){
             if(Sortarry[i]->birth->year>Sortarry[j]->birth->year)
-                Swarp(&Sortarry[i],&Sortarry[j]);
+                Swap(&Sortarry[i],&Sortarry[j]);
             else if(Sortarry[i]->birth->year==Sortarry[j]->birth->year){
                 if(Sortarry[i]->birth->month>Sortarry[j]->birth->month)
-                    Swarp(&Sortarry[i],&Sortarry[j]);
+                    Swap(&Sortarry[i],&Sortarry[j]);
                 else if(Sortarry[i]->birth->month==Sortarry[j]->birth->month){
                     if(Sortarry[i]->birth->day>Sortarry[j]->birth->day)
-                        Swarp(&Sortarry[i],&Sortarry[j]);
+                        Swap(&Sortarry[i],&Sortarry[j]);
                 }
             }
         }
@@ -335,8 +336,9 @@ Tree CheckBirth(Tree T,Date date){
         return NULL;
     }
 }
-//提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）)
+//提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）并提示今日无家族成员过生日（或者距离今日生日最近成员？？可作为完善功能）)
 char* RemindBirth(Tree T,Date date){
+    if (CheckBirth(T, date) == NULL)
+        printf("今日无家族成员过生日\n");
     return CheckBirth(T,date)->name;
 }
-
