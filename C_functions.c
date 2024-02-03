@@ -18,18 +18,23 @@ struct Time{
 };
 //节点结构体（姓名、出生日期、婚否、地址、健在否、死亡日期（若其已死亡），也可附加其它信息、但不是必需的。由于同一辈可能不止两人，则要用兄弟节点）
 struct TNode{
+    int depth;
+    int age_ratio;
     char *name;
     Date birth;
     bool marriage;
     char *address;
     bool alive;
     Date death;
+    Tree parent;
     Tree child;
     Tree subbro;
 };
 //创建树节点
 Tree CreateTNode(char *name,Date birth,bool marriage,char *address,bool alive,Date death){
     Tree T=(Tree)malloc(sizeof(struct TNode));
+    T->depth = 1;
+    T->age_ratio = birth->day + birth->month*100 + birth->year*10000;
     T->name=name;
     T->birth->day=birth->day;
     T->birth->month=birth->month;
@@ -44,6 +49,7 @@ Tree CreateTNode(char *name,Date birth,bool marriage,char *address,bool alive,Da
         T->death->month=death->month;
         T->death->year=death->year;
     }
+    T->parent = NULL;
     T->subbro=NULL;
     T->child=NULL;
     return T;
@@ -102,14 +108,16 @@ Tree Insert(Tree T,char *father,char *name,int byear,int bmonth,int bday,bool ma
     Tree newT=CreateTNode(name,birth,marriage,address,alive,death);
     if(father!=""){
         fathT=SearchByName(T,father);
-        if(!fathT->child)
-            fathT->child=newT;
+        newT->parent = fathT;
+        if (!fathT->child) 
+            fathT->child = newT;
         else{
             broT=fathT->child;
             while(broT->subbro)
                 broT=broT->subbro;
             broT->subbro=newT;
         }
+        newT->depth = fathT->depth + 1;
     }
     else
         T=newT;
@@ -117,8 +125,122 @@ Tree Insert(Tree T,char *father,char *name,int byear,int bmonth,int bday,bool ma
 }
 
 //关系溯源（输入两人姓名，确定其关系）
-char* Relation(Tree T,char *name1,char *name2){
-    //报错
+char* Relation(Tree T, char* name1, char* name2) {
+    Tree Person1 = (Tree)malloc(sizeof(struct TNode));
+    Tree Person2 = (Tree)malloc(sizeof(struct TNode));
+    Person1 = SearchByName(T, name1);
+    Person2 = SearchByName(T, name2);
+    if (Person1== NULL){
+        printf("家谱中没有%c\n",name1);
+        return;
+    }
+    if (Person2 == NULL) {
+        printf("家谱中没有%c\n", name2);
+        return;
+    }
+    int depth1 = Person1->depth;
+    int depth2 = Person2->depth;
+    int age1 = Person1->age_ratio;
+    int age2 = Person2->age_ratio;
+    switch (depth1 - depth2) {
+    case 0:
+        if (Person1->parent == Person2->parent) {
+            if (age1 < age2)
+                printf("%c 是 %c 的哥哥\n", name1, name2);
+            else
+                printf("%c 是 %c 的弟弟\n", name1, name2);
+        }
+        else if (Person1->parent != Person2->parent) {
+            if (age1) < age2)
+            printf("%c 是 %c 的堂哥\n", name1, name2);
+            else
+                printf("%c 是 %c 的堂弟\n", name1, name2);
+        }
+        break;
+
+    case -1:
+        if (Person1 == Person2->parent)
+            printf("%c 是 %c 的父亲\n", name1, name2);
+        else if (Person1 != Person2->parent && Person1->parent == Person2->parent->parent) {
+            if (age1 < Person2->parent.age_ratio)
+                printf("%c 是 %c 的伯伯\n", name1, name2);
+            else
+                printf("%c 是 %c 的叔叔\n", name1, name2);
+        }
+        else if (Person1 != Person2->parent && Person1->parent != Person2->parent->parent) {
+            if (age1 < Person2->parent.age_ratio)
+                printf("%c 是 %c 的堂伯\n", name1, name2);
+            else
+                printf("%c 是 %c 的堂叔\n", name1, name2);
+        }
+        break;
+
+    case 1:
+        if (Person2 == Person1->parent)
+            printf("%c 是 %c 的父亲\n", name2, name1);
+        else if (Person2 != Person1->parent && Person2->parent == Person1->parent->parent) {
+            if (age2 < Person1->parent.age_ratio)
+                printf("%c 是 %c 的伯伯\n", name2, name1);
+            else
+                printf("%c 是 %c 的叔叔\n", name2, name1);
+        }
+        else if (Person2 != Person1->parent && Person2->parent != Person1->parent->parent) {
+            if (age2 < Person1->parent.age_ratio)
+                printf("%c 是 %c 的堂伯\n", name2, name1);
+            else
+                printf("%c 是 %c 的堂叔\n", name2, name1);
+        }
+        break;
+
+    case -2:
+        if (Person1 == Person2->parent->parent)
+            printf("%c 是 %c 的爷爷\n", name1, name2);
+        else if (Person1 != Person2->parent->parent) {
+            if (age1 < Person2->parent->parent.age_ratio)
+                printf("%c 是 %c 的伯祖父\n", name1, name2);
+            else
+                printf("%c 是 %c 的叔祖父\n", name1, name2);
+        }
+        break;
+
+    case 2:
+        if (Person2 == Person1->parent->parent)
+            printf("%c 是 %c 的爷爷\n", name2, name1);
+        else if (Person2 != Person1->parent->parent) {
+            if (age2 < Person1->parent->parent.age_ratio)
+                printf("%c 是 %c 的伯祖父\n", name2, name1);
+            else
+                printf("%c 是 %c 的叔祖父\n", name2, name1);
+        }
+        break;
+    case -3:
+        if (Person1 == Person2->parent->parent->parent)
+            printf("%c 是 %c 的曾祖父\n", name1, name2);
+        else if (Person1 != Person2->parent->parent->parent) {
+            if (age1 < Person2->parent->parent->parent.age_ratio)
+                printf("%c 是 %c 的曾伯祖父\n", name1, name2);
+            else
+                printf("%c 是 %c 的曾叔祖父\n", name1, name2);
+        }
+        break;
+    case 3:
+        if (Person2 == Person1->parent->parent->parent)
+            printf("%c 是 %c 的曾祖父\n", name2, name1);
+        else if (Person2 != Person1->parent->parent->parent) {
+            if (age2 < Person1->parent->parent->parent.age_ratio)
+                printf("%c 是 %c 的曾伯祖父\n", name2, name1);
+            else
+                printf("%c 是 %c 的曾叔祖父\n", name2, name1);
+        }
+        break;
+    }
+    if (depth1 - depth2 < -3)
+        printf("%c 是 %c 的祖先\n", name1, name2);
+    else if(depth1 - depth2 > 3)
+        printf("%c 是 %c 的祖先\n", name2, name1);
+    free(Person1);
+    free(Person2);
+    return;
 }
 
 //修改成员信息(输入为要修改的节点以及全部信息，返回值为该节点)
