@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<stdbool.h>
 #include<string.h>
+#include<stdint.h>
 //下面的头文件为JNI虚拟机，调试时可以注释掉
 #include<jni.h>
 #include"JavaGUI.h"
@@ -95,11 +96,6 @@ Tree SearchByBirth(Tree T,Date birth){
 }
 //成员插入(返回值为树的第一个节点)(以其父节点进行查找插入)
 Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int bday,bool marriage,const char *address,bool alive,int dyear,int dmonth,int dday){
-    int b=6;
-    int *a;
-    a=&b;
-    
-    
     Tree fathT,broT;
     //报错
     if(T&&strcmp(father,"")==0)
@@ -119,11 +115,8 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
     }
     
     Tree newT=CreateTNode(name,birth,marriage,address,alive,death);
-    
-    if(!father){
-        //没走到这
+    if(!strcmp(father,"")){
         T=newT;
-        return (jlong)a;
     }
     else{
         fathT=SearchByName(T,father);
@@ -368,26 +361,29 @@ char* RemindBirth(Tree T,Date date){
 //以下为JNI函数
 JNIEXPORT jobject JNICALL Java_JavaGUI_convertToTree(JNIEnv *env,jobject obj,jlong T){
     Tree tnode=(Tree)T;
+    printf("%d",tnode);
     // 创建Java中的Date类
     jclass dateClass = (*env)->FindClass(env, "JavaGUI$Date"); 
     jmethodID dateConstructor = (*env)->GetMethodID(env, dateClass, "<init>", "(III)V");
-
+    
+    
     // 将C结构体中的日期数据填充到Java对象中
     jobject javaBirth = (*env)->NewObject(env, dateClass, dateConstructor, tnode->birth->year,
                                            tnode->birth->month, tnode->birth->day);
+    
     jobject javaDeath = (*env)->NewObject(env, dateClass, dateConstructor, tnode->death->year,
                                            tnode->death->month, tnode->death->day);
-
+    
     // 创建Java中的TNode类
     jclass tNodeClass = (*env)->FindClass(env, "JavaGUI$TNode");
-    jmethodID tNodeConstructor = (*env)->GetMethodID(env, tNodeClass, "<init>", "(IILjava/lang/String;Lcom/example/Date;ZLjava/lang/String;ZLcom/example/Date;JJJ)V");
-
+    jmethodID tNodeConstructor = (*env)->GetMethodID(env, tNodeClass, "<init>", "(IILjava/lang/String;LJavaGUI$Date;ZLjava/lang/String;ZLJavaGUI$Date;JJJ)V");
+    //这下面有问题！！！！
     // 将C结构体的数据填充到Java对象中
     jobject javaTNode = (*env)->NewObject(env, tNodeClass, tNodeConstructor, tnode->depth, tnode->age_ratio,
                                             (*env)->NewStringUTF(env, tnode->name), javaBirth, tnode->marriage,
                                             (*env)->NewStringUTF(env, tnode->address), tnode->alive, javaDeath,
                                             tnode->parent, tnode->child, tnode->subbro);
-
+    return;
     return javaTNode;
 }
 
@@ -412,20 +408,15 @@ JNIEXPORT jlong JNICALL Java_JavaGUI_searchByBirth(JNIEnv *env,jobject obj,jlong
 }
 //成员插入
 JNIEXPORT jlong JNICALL Java_JavaGUI_insert(JNIEnv *env,jobject obj,jlong T,jstring father,jstring name,jint byear,jint bmonth,jint bday,jboolean marriage,jstring address,jboolean alive,jint dyear,jint dmonth,jint dday){
-    int b=6;
-    int *a;
-    a=&b;
-    
     const char* c_name=(*env)->GetStringUTFChars(env,name,NULL);
     const char* c_address=(*env)->GetStringUTFChars(env,address,NULL);
     const char* c_father=(*env)->GetStringUTFChars(env,father,NULL);
     Tree T1=(Tree)T;
-    Insert(T1,c_father,c_name,byear,bmonth,bday,marriage,c_address,alive,dyear,dmonth,dday);
-    return (jlong)a;
+    T1=Insert(T1,c_father,c_name,byear,bmonth,bday,marriage,c_address,alive,dyear,dmonth,dday);
     (*env)->ReleaseStringUTFChars(env,name,c_name);
     (*env)->ReleaseStringUTFChars(env,father,c_father);
     (*env)->ReleaseStringUTFChars(env,address,c_address);
-    
+    printf("%d\n",T1);
     return (jlong)T1;
 }
 JNIEXPORT jlong JNICALL Java_JavaGUI_test(JNIEnv *env,jobject obj,jstring str){

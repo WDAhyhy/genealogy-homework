@@ -4,7 +4,7 @@ public class JavaGUI {
     static{
         System.loadLibrary("C_functions");
     }
-    public class Date {
+    public static class Date {
         int year;
         int month;
         int day; 
@@ -14,7 +14,7 @@ public class JavaGUI {
             this.day=day;
         }
     }
-    public class TNode {
+    public static class TNode {
         int depth;
         int age_ratio;
         String name;
@@ -62,9 +62,8 @@ public class JavaGUI {
         // frame.setVisible(true);
         JavaGUI CF=new JavaGUI();
         
-        long T=CF.insert(0, "null", "null", 0, 0, 0, false, "null", false, 0, 0, 0);
-        // TNode T1=CF.convertToTree(T);
-        System.out.println(T);
+        long T=CF.insert(0, "", "null", 0, 0, 0, false, "null", false, 0, 0, 0);
+        TNode T1=CF.convertToTree(T);
     }
 
 
