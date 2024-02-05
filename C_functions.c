@@ -361,7 +361,6 @@ char* RemindBirth(Tree T,Date date){
 //以下为JNI函数
 JNIEXPORT jobject JNICALL Java_JavaGUI_convertToTree(JNIEnv *env,jobject obj,jlong T){
     Tree tnode=(Tree)T;
-    printf("%d",tnode);
     // 创建Java中的Date类
     jclass dateClass = (*env)->FindClass(env, "JavaGUI$Date"); 
     jmethodID dateConstructor = (*env)->GetMethodID(env, dateClass, "<init>", "(III)V");
@@ -377,13 +376,12 @@ JNIEXPORT jobject JNICALL Java_JavaGUI_convertToTree(JNIEnv *env,jobject obj,jlo
     // 创建Java中的TNode类
     jclass tNodeClass = (*env)->FindClass(env, "JavaGUI$TNode");
     jmethodID tNodeConstructor = (*env)->GetMethodID(env, tNodeClass, "<init>", "(IILjava/lang/String;LJavaGUI$Date;ZLjava/lang/String;ZLJavaGUI$Date;JJJ)V");
-    //这下面有问题！！！！
     // 将C结构体的数据填充到Java对象中
     jobject javaTNode = (*env)->NewObject(env, tNodeClass, tNodeConstructor, tnode->depth, tnode->age_ratio,
                                             (*env)->NewStringUTF(env, tnode->name), javaBirth, tnode->marriage,
                                             (*env)->NewStringUTF(env, tnode->address), tnode->alive, javaDeath,
                                             tnode->parent, tnode->child, tnode->subbro);
-    return;
+    
     return javaTNode;
 }
 
@@ -416,7 +414,6 @@ JNIEXPORT jlong JNICALL Java_JavaGUI_insert(JNIEnv *env,jobject obj,jlong T,jstr
     (*env)->ReleaseStringUTFChars(env,name,c_name);
     (*env)->ReleaseStringUTFChars(env,father,c_father);
     (*env)->ReleaseStringUTFChars(env,address,c_address);
-    printf("%d\n",T1);
     return (jlong)T1;
 }
 JNIEXPORT jlong JNICALL Java_JavaGUI_test(JNIEnv *env,jobject obj,jstring str){

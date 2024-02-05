@@ -30,15 +30,11 @@ public class JavaGUI {
             this.depth=depth;
             this.age_ratio=age_ratio;
             this.name=name;
-            this.birth.day=birth.day;
-            this.birth.month=birth.month;
-            this.birth.year=birth.year;
+            this.birth=birth;
             this.marriage=marriage;
             this.address=address;
             this.alive=alive;
-            this.death.day=death.day;
-            this.death.month=death.month;
-            this.death.year=death.year;
+            this.death=death;
             this.parent=parent;
             this.child=child;
             this.subbro=subbro;
@@ -62,8 +58,9 @@ public class JavaGUI {
         // frame.setVisible(true);
         JavaGUI CF=new JavaGUI();
         
-        long T=CF.insert(0, "", "null", 0, 0, 0, false, "null", false, 0, 0, 0);
+        long T=CF.insert(0, "", "null", 0, 70000, 0, false, "null", false, 0, 0, 0);
         TNode T1=CF.convertToTree(T);
+        System.out.println(T1.birth.month);
     }
 
 
