@@ -256,13 +256,13 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
 // }
 
 //修改成员信息(输入为要修改的节点以及全部信息，返回值为该节点)
-Tree Modify(Tree T,char* name,Date birth,bool marriage,char *address,bool alive,Date death){
-    T->name=name;
+Tree Modify(Tree T,const char* name,Date birth,bool marriage,const char *address,bool alive,Date death){
+    T->name=strdup(name);
     T->birth->day=birth->day;
     T->birth->month=birth->month;
     T->birth->year=birth->year;
     T->marriage=marriage;
-    T->address=address;
+    T->address=strdup(address);
     T->alive=alive;
     if(!alive){
         T->death->day=death->day;
@@ -391,6 +391,15 @@ JNIEXPORT jobject JNICALL Java_JavaGUI_convertToTree(JNIEnv *env,jobject obj,jlo
                                             tnode->parent, tnode->child, tnode->subbro);
     
     return javaTNode;
+}
+JNIEXPORT jobject JNICALL Java_JavaGUI_convertToDate(JNIEnv *env,jobject obj,jlong date){
+    Date Dnode=(Date)date;
+    // 创建Java中的Date类
+    jclass dateClass = (*env)->FindClass(env, "JavaGUI$Date"); 
+    jmethodID dateConstructor = (*env)->GetMethodID(env, dateClass, "<init>", "(III)V");
+    jobject javadate=(*env)->NewObject(env,dateClass,dateConstructor,Dnode->year,Dnode->month,Dnode->day);
+    return javadate;
+
 }
 
 //查找 名

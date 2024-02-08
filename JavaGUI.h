@@ -41,11 +41,43 @@ JNIEXPORT jobject JNICALL Java_JavaGUI_convertToTree
 
 /*
  * Class:     JavaGUI
- * Method:    test
- * Signature: (Ljava/lang/String;)J
+ * Method:    modify
+ * Signature: (JLjava/lang/String;IIIZLjava/lang/String;ZIII)J
  */
-JNIEXPORT jlong JNICALL Java_JavaGUI_test
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jlong JNICALL Java_JavaGUI_modify
+  (JNIEnv *, jobject, jlong, jstring, jint, jint, jint, jboolean, jstring, jboolean, jint, jint, jint);
+
+/*
+ * Class:     JavaGUI
+ * Method:    sortByBirth
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_JavaGUI_sortByBirth
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     JavaGUI
+ * Method:    modifyDate
+ * Signature: (JIII)J
+ */
+JNIEXPORT jlong JNICALL Java_JavaGUI_modifyDate
+  (JNIEnv *, jobject, jlong, jint, jint, jint);
+
+/*
+ * Class:     JavaGUI
+ * Method:    remindBirth
+ * Signature: (JJ)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     JavaGUI
+ * Method:    convertToDate
+ * Signature: (J)LJavaGUI/Date;
+ */
+JNIEXPORT jobject JNICALL Java_JavaGUI_convertToDate
+  (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus
 }
