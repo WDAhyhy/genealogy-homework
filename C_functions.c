@@ -258,11 +258,19 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
 //修改成员信息(输入为要修改的节点以及全部信息，返回值为该节点)
 Tree Modify(Tree T,char* name,Date birth,bool marriage,char *address,bool alive,Date death){
     T->name=name;
-    T->birth=birth;
+    T->birth->day=birth->day;
+    T->birth->month=birth->month;
+    T->birth->year=birth->year;
     T->marriage=marriage;
     T->address=address;
     T->alive=alive;
-    T->death=death;
+    if(!alive){
+        T->death->day=death->day;
+        T->death->month=death->month;
+        T->death->year=death->year;
+    }
+    else
+        T->death=NULL;
     return T;
 }
 //计算族谱人数总数
@@ -416,17 +424,49 @@ JNIEXPORT jlong JNICALL Java_JavaGUI_insert(JNIEnv *env,jobject obj,jlong T,jstr
     (*env)->ReleaseStringUTFChars(env,address,c_address);
     return (jlong)T1;
 }
-JNIEXPORT jlong JNICALL Java_JavaGUI_test(JNIEnv *env,jobject obj,jstring str){
-    char* c_name=(*env)->GetStringUTFChars(env,str,NULL);
-    f(c_name);
-    int b=6;
-    int *a;
-    a=&b;
-    (*env)->ReleaseStringUTFChars(env,str,c_name);
+// JNIEXPORT jlong JNICALL Java_JavaGUI_test(JNIEnv *env,jobject obj,jstring str){
+//     char* c_name=(*env)->GetStringUTFChars(env,str,NULL);
+//     f(c_name);
+//     int b=6;
+//     int *a;
+//     a=&b;
+//     (*env)->ReleaseStringUTFChars(env,str,c_name);
     
-    return (jlong)a;
-}
-// int main(){
-//     Tree T=Insert(NULL, NULL, "你好", 0, 0, 0, false, NULL, false, 0, 0, 0);
-//     printf("%d",T->birth->day);
+//     return (jlong)a;
 // }
+// int main(){
+//     Tree T=Insert(NULL, "", "你好", 0, 0, 0, false, NULL, false, 0, 0, 0);
+//     printf("%s",T->name);
+// }
+JNIEXPORT jlong JNICALL Java_JavaGUI_modify(JNIEnv *env,jobject obj,jlong T,jstring name,jint byear,jint bmonth,jint bday,jboolean marriage,jstring address,jboolean alive,jint dyear,jint dmonth,jint dday){
+    const char* c_name=(*env)->GetStringUTFChars(env,name,NULL);
+    const char* c_address=(*env)->GetStringUTFChars(env,address,NULL);
+    Tree T1=(Tree)T;
+    Date birth=(Date)malloc(sizeof(struct Time));
+    Date death=(Date)malloc(sizeof(struct Time));
+    birth->day=bday;
+    birth->month=bmonth;
+    birth->year=byear;
+    if(!alive){
+        death->day=dday;
+        death->month=dmonth;
+        death->year=dyear;
+    }
+    else
+        death=NULL;
+    T1=Modify(T1,c_name,birth,marriage,c_address,alive,death);
+    (*env)->ReleaseStringUTFChars(env,name,c_name);
+    (*env)->ReleaseStringUTFChars(env,address,c_address);
+    free(birth);
+    free(death);
+    return (jlong)T1;
+}
+JNIEXPORT jstring JNICALL Java_JavaGUI_sortByBirth(JNIEnv *env,jobject obj,jlong T){
+    return (*env)->NewStringUTF(env,SortByBirth((Tree)T));
+}
+JNIEXPORT jlong JNICALL Java_JavaGUI_modifyDate(JNIEnv *env,jobject obj,jlong date,jint year,jint month,jint day){
+    return (jlong)ModifyDate((Date)date,year,month,day);
+}
+JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth(JNIEnv *env,jobject obj,jlong T,jlong date){
+    return (*env)->NewStringUTF(env,RemindBirth((Tree)T,(Date)date));
+}
