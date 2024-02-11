@@ -1,4 +1,5 @@
-import javax.swing.JFrame;
+import java.awt.*;
+import javax.swing.*;
 //需要实现插入，删除，查找，添加，判断
 public class JavaGUI {
     //加载C库
@@ -60,7 +61,9 @@ public class JavaGUI {
         JFrame frame = new JFrame("族谱管理系统");
         frame.setSize(1920,1080);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBackground(Color.darkGray);
         frame.setVisible(true);
+        
         JavaGUI CF=new JavaGUI();
     }
 
