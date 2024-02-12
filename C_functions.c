@@ -36,16 +36,28 @@ struct TNode{
 void f(char* s){
     return;
 }
-//创建树节点
+
+//创建时间节点
+//（年，月，日）
+Date CreateTime(int year, int month, int day) {
+    Date D = (Date)malloc(sizeof(struct Time));
+    D->year = year;
+    D->month = month;
+    D->day = day;
+    return D;
+}
+
+//创建树节点  
+// ("名字"，Data结构体生日，bool婚否，"住址"，bool健在，Data结构体忌日)  返回->创建结点
 Tree CreateTNode(const char *name,Date birth,bool marriage,const char *address,bool alive,Date death){
     Tree T=(Tree)malloc(sizeof(struct TNode));
     T->birth=(Date)malloc(sizeof(struct Time));
     T->depth = 1;
-    T->age_ratio = birth->day + birth->month*100 + birth->year*10000;
     T->name=strdup(name);
     T->birth->day=birth->day;
     T->birth->month=birth->month;
     T->birth->year=birth->year;
+    T->age_ratio = birth->day + birth->month * 100 + birth->year * 10000;
     T->marriage=marriage;
     T->address=strdup(address);
     T->alive=alive;
@@ -63,7 +75,8 @@ Tree CreateTNode(const char *name,Date birth,bool marriage,const char *address,b
     return T;
 }
 
-//成员查询(通过姓名或者出生日期查询)
+//成员查询(通过姓名或者出生日期查询)  
+// (Tree结构体，"名字")  返回->查找结点
 Tree SearchByName(Tree T,const char *name){
     if(!T){
         return NULL;
@@ -79,6 +92,8 @@ Tree SearchByName(Tree T,const char *name){
         return NULL;
     }
 }
+
+//(Tree结构体，Data结构体)  返回->查找结点
 Tree SearchByBirth(Tree T,Date birth){
     if(!T){
         return NULL;
@@ -94,9 +109,13 @@ Tree SearchByBirth(Tree T,Date birth){
         return NULL;
     }
 }
-//成员插入(返回值为树的第一个节点)(以其父节点进行查找插入)
+
+//成员插入(返回值为树的第一个节点)(以其父节点进行查找插入)  
+// (树的第一个节点，"父亲名字"，"本人名字"，int b年，int b月，int b日，bool婚否，"住址"，bool健在，int d年，int d月，int d日)
+//返回->树的第一个节点
 Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int bday,bool marriage,const char *address,bool alive,int dyear,int dmonth,int dday){
-    Tree fathT,broT;
+    Tree fathT = CreateTNode("", NULL, false, "", false, NULL);
+    Tree broT;
     //报错
     if(T&&strcmp(father,"")==0)
         return NULL;
@@ -119,9 +138,8 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
         T=newT;
     }
     else{
-        fathT=SearchByName(T,father);
         newT->parent = fathT;
-        if (!fathT->child) 
+        if (fathT->child==NULL) 
             fathT->child = newT;
         else{
             broT=fathT->child;
@@ -137,6 +155,7 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
 
 //关系溯源（输入两人姓名，确定其关系）  
 //家谱树已经通过出生日期排序，修改为通过深度确定辈分，下标确定年龄
+//(Tree结构体,"名字1","名字2")  输出 print内容，返回值为空
  void Relation(Tree T, char* name1, char* name2) {
      Tree Person1 = (Tree)malloc(sizeof(struct TNode));
      Tree Person2 = (Tree)malloc(sizeof(struct TNode));
@@ -259,7 +278,8 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
      return;
  }
 
-//修改成员信息(输入为要修改的节点以及全部信息，返回值为该节点)
+//修改成员信息 
+// (修改的节点，"名字"，生日节点，bool婚否，"住址"，bool健在，死亡节点）  返回->该节点
 Tree Modify(Tree T,const char* name,Date birth,bool marriage,const char *address,bool alive,Date death){
     T->name=strdup(name);
     T->birth->day=birth->day;
@@ -277,14 +297,18 @@ Tree Modify(Tree T,const char* name,Date birth,bool marriage,const char *address
         T->death=NULL;
     return T;
 }
+
 //计算族谱人数总数
+// (头结点）  返回->总数
 int Count(Tree T){
     int num=0;
     if(!T)
         return 0;
     return Count(T->subbro)+Count(T->child)+1;
 }
-//将树存进数组准备排序
+
+//将树存进数组准备排序  
+// (头结点，结构数组，)
 Tree *AddInArry(Tree T,Tree *arry,int index,int num){
     Tree *arry2;
     if(!T)
@@ -300,13 +324,16 @@ Tree *AddInArry(Tree T,Tree *arry,int index,int num){
         arry=arry2;
     return arry;
 }
+
 //交换
 void Swap(Tree* T1,Tree* T2){
     Tree T3=*T1;
     *T1=*T2;
     *T2=T3;
 }
-//按出生日期对所有成员排序(返回值字符串)
+
+//按出生日期对所有成员排序
+// (返回值字符串)
 char* SortByBirth(Tree T){
     int i,j;
     int num=Count(T);
@@ -336,6 +363,7 @@ char* SortByBirth(Tree T){
     }
     return str;
 }
+
 //修改当前日期
 Date ModifyDate(Date date,int year,int month,int day){
     date->year=year;
@@ -343,6 +371,9 @@ Date ModifyDate(Date date,int year,int month,int day){
     date->day=day;
     return date;
 }
+
+//搜索当日生日健在成员  
+// (头结点，当日日期)  返回->当日生日健在成员节点
 Tree CheckBirth(Tree T,Date date){
     Tree T1;
     if(!T)
@@ -359,18 +390,33 @@ Tree CheckBirth(Tree T,Date date){
         return NULL;
     }
 }
+
 //提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）并提示今日无家族成员过生日（或者距离今日生日最近成员？？可作为完善功能）)
-char* RemindBirth(Tree T,Date date){
+//(头结点，当期日期)  无返回值
+void  RemindBirth(Tree T,Date date){
     if (CheckBirth(T, date) == NULL)
         printf("今日无家族成员过生日\n");
-    return CheckBirth(T,date)->name;
+    else printf("今日%s过生日\n", CheckBirth(T, date)->name);
 }
 
 int main() {
-     Tree T=Insert(NULL,"", "你好", 0, 0, 0, false, NULL, false, 0, 0, 0);
-     printf("%d",T->birth->day);
-     Relation(T,"c","s");
-     printf("%s",T->name);
+    Date Today = CreateTime(2024,1,1);
+    Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, NULL, false, 2005, 1, 1);
+    Insert(T,"祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false,2011 , 1, 2);
+    //Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
+    //Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
+    //Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
+    //Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
+    //Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
+    //Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true,0,0,0);
+    //Date Dan_Birth = CreateTime(2004, 2, 12);
+    //Modify(T, "狗蛋",Dan_Birth, true, "二蛋", true,NULL);
+    //RemindBirth(T, Today);
+    printf("%s\n", T->name);
+    printf("%d.%d.%d\n", T->birth->year, T->birth->month, T->birth->day);
+    printf("%s\n", T->address);
+    printf("%d.%d.%d\n", T->death->year, T->death->month, T->death->day);
+    RemindBirth(T, Today);
 }
 
 
