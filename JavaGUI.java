@@ -58,14 +58,30 @@ public class JavaGUI {
 
     //主函数
     public static void main(String[] args) {
-        JFrame frame = new JFrame("族谱管理系统");
-        frame.setSize(1920,1080);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBackground(Color.darkGray);
-        frame.setVisible(true);
-        
-        JavaGUI CF=new JavaGUI();
+        new MyFrame().init();
     }
+}
+class MyFrame extends JFrame{
+    Container container;
+    public void init(){
+        
+    }
+    public  MyFrame(){
+        super("族谱管理系统");
+        setVisible(true);
+        this.container=getContentPane();
+        this.container.setLayout(null);
+        setSize(1920,1080);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.container.setBackground(new Color(173, 216, 230));
+        //按钮
+        JButton b_insert=new JButton("插入");
+        b_insert.setBounds(1350,50,150,50);
+        b_insert.setFont(new Font("宋体",Font.BOLD,30));
+        JButton b_search=new JButton("查找");
+        b_search.setBounds(getBounds());
+        this.container.add(b_insert);
+        setVisible(true);
 
-
+    }
 }
