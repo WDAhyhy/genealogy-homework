@@ -389,6 +389,33 @@ Tree CheckBirth(Tree T,Date date){
     }
 }
 
+//删除函数
+//(删除节点)  返回->bool型
+bool Delete(Tree T) {
+    if (!T) {
+        printf("家谱中没有该成员\n");
+        return false;
+    }
+    if (!T->parent) {
+        free(T);
+        return true;
+    }//删除节点为头结点
+    else {
+        Tree fathT = T->parent;
+        if (fathT->child == T) {
+            fathT->child = T->subbro;
+            return true;
+        }
+        else {
+            Tree broT = fathT->child;
+            while (broT->subbro != T)
+                broT = broT->subbro;
+            broT->subbro = NULL;
+            return true;
+        }
+    }
+}
+
 //提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）并提示今日无家族成员过生日（或者距离今日生日最近成员？？可作为完善功能）)
 //(头结点，当期日期)  无返回值
 void  RemindBirth(Tree T,Date date){
@@ -410,15 +437,20 @@ int main() {
     Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
     Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true,0,0,0);
     Date Dan_Birth = CreateTime(2004, 2, 12);
-    Tree ModifyT = SearchByName(T, "狗蛋");
-    Modify(ModifyT, "二蛋",Dan_Birth, true, "翻斗花园", true,NULL);
+    Tree ModifyT1 = SearchByName(T, "狗蛋");
+    Tree ModifyT2 = SearchByName(T, "小明1");
+    Modify(ModifyT1, "二蛋",Dan_Birth, true, "翻斗花园", true,NULL);
     printf("%s\n", T->name);
     printf("%d\n", T->depth);
     printf("%d.%d.%d\n", T->birth->year, T->birth->month, T->birth->day);
     printf("%s\n", T->address);
     printf("%d.%d.%d\n", T->death->year, T->death->month,T->death->day);
-    Relation(T,"阿华2", "阿华1");
+    Relation(T,"二蛋", "阿华1");
     RemindBirth(T, Today);
+    Delete(ModifyT2);
+    Relation(T, "小明1", "小明2");
+    Relation(T, "二蛋", "小明2");
+    Relation(T, "阿聪1", "小明2");
 }
 
 
