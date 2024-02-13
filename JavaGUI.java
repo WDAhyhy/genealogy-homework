@@ -75,13 +75,27 @@ class MyFrame extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.container.setBackground(new Color(173, 216, 230));
         //按钮
-        JButton b_insert=new JButton("插入");
-        b_insert.setBounds(1350,50,150,50);
-        b_insert.setFont(new Font("宋体",Font.BOLD,30));
-        JButton b_search=new JButton("查找");
-        b_search.setBounds(getBounds());
-        this.container.add(b_insert);
+        MyBotton mybotton=new MyBotton();
+        this.container.add(mybotton.b_insert);
+        this.container.add(mybotton.b_search);
+        this.container.add(mybotton.b_del);
         setVisible(true);
+        pack();
 
     }
+}
+//按钮类
+class MyBotton extends JButton{
+    JButton b_insert,b_search,b_del;
+    public MyBotton(){
+        this.b_insert=new JButton("插入");
+        this.b_insert.setBounds(1350,50,150,50);
+        this.b_insert.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_search=new JButton("查找");
+        this.b_search.setBounds(1350,150,150,50);
+        this.b_search.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_del=new JButton("删除");
+        this.b_del.setBounds(1350,250,150,50);
+        this.b_del.setFont(new Font("宋体",Font.BOLD,30));
+}
 }
