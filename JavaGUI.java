@@ -74,17 +74,85 @@ class MyFrame extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.container=getContentPane();
         this.container.setLayout(null);
+        //按钮
+        MyButton mybutton=new MyButton(this);
         //面板
+        //初始面板
         this.panel_init=new JPanel();
         this.panel_init.setBackground(new Color(173, 216, 230));
         this.panel_init.setBounds(this.getBounds());
         this.panel_init.setLayout(null);
-
-        //按钮
-        MyButton mybutton=new MyButton(this);
         this.panel_init.add(mybutton.b_insert);
         this.panel_init.add(mybutton.b_search);
         this.panel_init.add(mybutton.b_del);
+        //插入面板
+        this.panel_insert=new JPanel();
+        this.panel_insert.setBackground(Color.pink);
+        this.panel_insert.setBounds(this.getBounds());
+        this.panel_insert.setLayout(null);
+
+
+        JLabel fatherJLabel=new JLabel("父亲：");
+        JTextArea fatherJTextArea=new JTextArea(1,5);
+        fatherJLabel.setBounds(50,50,100,100);
+        fatherJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        fatherJTextArea.setBounds(150,85,100,30);
+        fatherJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+
+
+        JLabel nameJLabel=new JLabel("姓名：");
+        JTextArea nameJTextArea=new JTextArea(1,5);
+        nameJLabel.setBounds(50,150,100,100);
+        nameJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        nameJTextArea.setBounds(150,185,100,30);
+        nameJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+
+        JLabel birthJLabel= new JLabel("生日：");
+        JTextArea byearJTextArea=new JTextArea(1,5);
+        birthJLabel.setBounds(50,250,100,100);
+        birthJLabel.setFont(new Font("宋体",Font.BOLD,30));
+
+        byearJTextArea.setBounds(150,285,100,30);
+        byearJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+
+        JLabel byearJLabel=new JLabel("年");
+        byearJLabel.setBounds(275,253,100,100);
+        byearJLabel.setFont(new Font("宋体",Font.BOLD,30));
+
+        JTextArea bmonthJTextArea=new JTextArea(1,5);
+        bmonthJTextArea.setBounds(350,285,100,30);
+        bmonthJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+
+        JLabel bmonthJLabel=new JLabel("月");
+        bmonthJLabel.setBounds(475,253,100,100);
+        bmonthJLabel.setFont(new Font("宋体",Font.BOLD,30));
+
+        JTextArea bdayJTextArea=new JTextArea(1,5);
+        bdayJTextArea.setBounds(550,285,100,30);
+        bdayJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+
+        JLabel bdayJLabel=new JLabel("日");
+        bdayJLabel.setBounds(675,253,100,100);
+        bdayJLabel.setFont(new Font("宋体",Font.BOLD,30));
+
+
+
+        JLabel addressJLabel= new JLabel("地址：");
+        JLabel aliveJLabel=new JLabel("存活");
+        JLabel deathJLabel=new JLabel("死亡日期：");
+        
+        panel_insert.add(fatherJLabel);
+        panel_insert.add(fatherJTextArea);
+        panel_insert.add(nameJLabel);
+        panel_insert.add(nameJTextArea);
+        panel_insert.add(birthJLabel);
+        panel_insert.add(byearJTextArea);
+        panel_insert.add(byearJLabel);
+        panel_insert.add(bmonthJTextArea);
+        panel_insert.add(bmonthJLabel);
+        panel_insert.add(bdayJLabel);
+        panel_insert.add(bdayJTextArea);
+        
         this.container.add(panel_init);
         pack();
 
@@ -118,6 +186,7 @@ class MyActionListener implements ActionListener{
     public void actionPerformed(ActionEvent e){
         if(e.getActionCommand()=="插入"){
             this.frame.container.remove(this.frame.panel_init);
+            this.frame.container.add(this.frame.panel_insert);
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
