@@ -114,8 +114,7 @@ Tree SearchByBirth(Tree T,Date birth){
 // (树的第一个节点，"父亲名字"，"本人名字"，int b年，int b月，int b日，bool婚否，"住址"，bool健在，int d年，int d月，int d日)
 //返回->树的第一个节点
 Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int bday,bool marriage,const char *address,bool alive,int dyear,int dmonth,int dday){
-    Tree fathT = (Tree)malloc(sizeof(struct TNode));
-    Tree broT= (Tree)malloc(sizeof(struct TNode));
+    Tree fathT,broT;
     //报错
     if(T&&strcmp(father,"")==0)
         return NULL;
@@ -397,28 +396,32 @@ Tree CheckBirth(Tree T,Date date){
 //提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）并提示今日无家族成员过生日（或者距离今日生日最近成员？？可作为完善功能）)
 //(头结点，当期日期)  无返回值
 void  RemindBirth(Tree T,Date date){
-    if (CheckBirth(T, date) == NULL)
+    Tree check = CheckBirth(T, date);
+    if (check== NULL)
         printf("今日无家族成员过生日\n");
-    else printf("今日%s过生日\n", CheckBirth(T, date)->name);
+    else printf("今日%s过生日\n", check->name);
+    return;
 }
 
 int main() {
-    Date Today = CreateTime(2024,1,1);
+    Date Today = CreateTime(2024,2,12);
     Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
     Insert(T,"祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false,2011 , 1, 2);
     Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
-    //Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
-    //Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
-    //Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
-    //Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
-    //Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true,0,0,0);
-    //Date Dan_Birth = CreateTime(2004, 2, 12);
-    //Modify(T, "狗蛋",Dan_Birth, true, "二蛋", true,NULL);
+    Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
+    Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
+    Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
+    Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
+    Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true,0,0,0);
+    Date Dan_Birth = CreateTime(2004, 2, 12);
+    Tree ModifyT = SearchByName(T, "狗蛋");
+    Modify(ModifyT, "二蛋",Dan_Birth, true, "翻斗花园", true,NULL);
     printf("%s\n", T->name);
     printf("%d\n", T->depth);
     printf("%d.%d.%d\n", T->birth->year, T->birth->month, T->birth->day);
     printf("%s\n", T->address);
-    printf("%d.%d.%d\n", T->death->year, T->death->month, T->death->day);
+    printf("%d.%d.%d\n", T->death->year, T->death->month,T->death->day);
+    //Relation(T,"阿华2", "阿华1");
     RemindBirth(T, Today);
 }
 
