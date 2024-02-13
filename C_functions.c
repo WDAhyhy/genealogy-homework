@@ -76,7 +76,7 @@ Tree CreateTNode(const char *name,Date birth,bool marriage,const char *address,b
 }
 
 //成员查询(通过姓名或者出生日期查询)  
-// (Tree结构体，"名字")  返回->查找结点
+// (头结点，"名字")  返回->查找结点
 Tree SearchByName(Tree T,const char *name){
     if(!T){
         return NULL;
@@ -93,7 +93,7 @@ Tree SearchByName(Tree T,const char *name){
     }
 }
 
-//(Tree结构体，Data结构体)  返回->查找结点
+//(头结点，Data结构体)  返回->查找结点
 Tree SearchByBirth(Tree T,Date birth){
     if(!T){
         return NULL;
@@ -111,7 +111,7 @@ Tree SearchByBirth(Tree T,Date birth){
 }
 
 //成员插入(返回值为树的第一个节点)(以其父节点进行查找插入)  
-// (树的第一个节点，"父亲名字"，"本人名字"，int b年，int b月，int b日，bool婚否，"住址"，bool健在，int d年，int d月，int d日)
+// (头结点，"父亲名字"，"本人名字"，int b年，int b月，int b日，bool婚否，"住址"，bool健在，int d年，int d月，int d日)
 //返回->树的第一个节点
 Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int bday,bool marriage,const char *address,bool alive,int dyear,int dmonth,int dday){
     Tree fathT,broT;
@@ -156,7 +156,7 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
 
 //关系溯源（输入两人姓名，确定其关系）  
 //家谱树已经通过出生日期排序，修改为通过深度确定辈分，下标确定年龄
-//(Tree结构体,"名字1","名字2")  输出 print内容，返回值为空
+//(头结点,"名字1","名字2")  输出 print内容，返回值为空
 void Relation(Tree T, char* name1, char* name2) {
     Tree Person1 = SearchByName(T, name1);
     Tree Person2 = SearchByName(T, name2);
@@ -277,7 +277,7 @@ void Relation(Tree T, char* name1, char* name2) {
  
 
 //修改成员信息 
-// (修改的节点，"名字"，生日节点，bool婚否，"住址"，bool健在，死亡节点）  返回->该节点
+// (修改节点，"名字"，生日节点，bool婚否，"住址"，bool健在，死亡节点）  返回->该节点
 Tree Modify(Tree T,const char* name,Date birth,bool marriage,const char *address,bool alive,Date death){
     T->name=strdup(name);
     T->birth->day=birth->day;
@@ -306,7 +306,7 @@ int Count(Tree T){
 }
 
 //将树存进数组准备排序  
-// (头结点，结构数组，)
+// (头结点，结构数组，已排序下标，总数)  返回->数组
 Tree *AddInArry(Tree T,Tree *arry,int index,int num){
     Tree *arry2;
     if(!T)
@@ -339,25 +339,17 @@ char* SortByBirth(Tree T){
     Tree *Sortarry=(Tree*)malloc(num*sizeof(Tree));
     Sortarry=AddInArry(T,Sortarry,0,num);
     //简单选择排序
-    for(i=0;i<num;i++){
-        for(j=i;j<num;j++){
-            if(Sortarry[i]->birth->year>Sortarry[j]->birth->year)
-                Swap(&Sortarry[i],&Sortarry[j]);
-            else if(Sortarry[i]->birth->year==Sortarry[j]->birth->year){
-                if(Sortarry[i]->birth->month>Sortarry[j]->birth->month)
-                    Swap(&Sortarry[i],&Sortarry[j]);
-                else if(Sortarry[i]->birth->month==Sortarry[j]->birth->month){
-                    if(Sortarry[i]->birth->day>Sortarry[j]->birth->day)
-                        Swap(&Sortarry[i],&Sortarry[j]);
-                }
-            }
+    for (i = 0; i < num; i++) {
+        for (j = i; j < num; j++) {
+            if (Sortarry[i]->age_ratio> Sortarry[j]->age_ratio)
+                Swap(&Sortarry[i], &Sortarry[j]);
         }
     }
     //对字符串进行处理
-    strcpy(str,Sortarry[0]->name);
-    for(i=1;i<num;i++){
-        strcat(str," ");
-        strcat(str,Sortarry[i]->name);
+    strcpy(str, Sortarry[0]->name);
+    for (i = 1; i < num; i++) {
+        strcat(str, " ");
+        strcat(str, Sortarry[i]->name);
     }
     return str;
 }
@@ -417,7 +409,7 @@ bool Delete(Tree T) {
 }
 
 //提醒当天生日的健在成员(如有，返回名字（或者该节点？），没有返回空字符（或者NULL？）并提示今日无家族成员过生日（或者距离今日生日最近成员？？可作为完善功能）)
-//(头结点，当期日期)  无返回值
+//(头结点，当前日期)  无返回值
 void  RemindBirth(Tree T,Date date){
     Tree check = CheckBirth(T, date);
     if (check== NULL)
@@ -436,21 +428,22 @@ int main() {
     Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
     Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
     Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true,0,0,0);
-    Date Dan_Birth = CreateTime(2004, 2, 12);
-    Tree ModifyT1 = SearchByName(T, "狗蛋");
-    Tree ModifyT2 = SearchByName(T, "小明1");
-    Modify(ModifyT1, "二蛋",Dan_Birth, true, "翻斗花园", true,NULL);
-    printf("%s\n", T->name);
-    printf("%d\n", T->depth);
-    printf("%d.%d.%d\n", T->birth->year, T->birth->month, T->birth->day);
-    printf("%s\n", T->address);
-    printf("%d.%d.%d\n", T->death->year, T->death->month,T->death->day);
-    Relation(T,"二蛋", "阿华1");
-    RemindBirth(T, Today);
-    Delete(ModifyT2);
-    Relation(T, "小明1", "小明2");
-    Relation(T, "二蛋", "小明2");
-    Relation(T, "阿聪1", "小明2");
+    //Date Dan_Birth = CreateTime(2004, 2, 12);
+    //Tree ModifyT1 = SearchByName(T, "狗蛋");
+    //Tree ModifyT2 = SearchByName(T, "小明2");
+    //Modify(ModifyT1, "二蛋",Dan_Birth, true, "翻斗花园", true,NULL);
+    //printf("%s\n", T->name);
+    //printf("%d\n", T->depth);
+    //printf("%d.%d.%d\n", T->birth->year, T->birth->month, T->birth->day);
+    //printf("%s\n", T->address);
+    //printf("%d.%d.%d\n", T->death->year, T->death->month,T->death->day);
+    //Relation(T,"二蛋", "阿华1");
+    //RemindBirth(T, Today);
+    //Delete(ModifyT2);
+    //Relation(T, "小明1", "小明2");
+    //Relation(T, "二蛋", "小明2");
+    //Relation(T, "阿聪1", "小明2");
+    printf("%s\n", SortByBirth(T));
 }
 
 
