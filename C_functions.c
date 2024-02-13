@@ -81,7 +81,7 @@ Tree SearchByName(Tree T,const char *name){
     if(!T){
         return NULL;
     }
-    if(T->name==name){
+    if(!strcmp(T->name,name)){
         return T;
     }
     else{
@@ -114,8 +114,8 @@ Tree SearchByBirth(Tree T,Date birth){
 // (树的第一个节点，"父亲名字"，"本人名字"，int b年，int b月，int b日，bool婚否，"住址"，bool健在，int d年，int d月，int d日)
 //返回->树的第一个节点
 Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int bday,bool marriage,const char *address,bool alive,int dyear,int dmonth,int dday){
-    Tree fathT = CreateTNode("", NULL, false, "", false, NULL);
-    Tree broT;
+    Tree fathT = (Tree)malloc(sizeof(struct TNode));
+    Tree broT= (Tree)malloc(sizeof(struct TNode));
     //报错
     if(T&&strcmp(father,"")==0)
         return NULL;
@@ -137,26 +137,28 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
     if(!strcmp(father,"")){
         T=newT;
     }
-    else{
-        newT->parent = fathT;
-        if (fathT->child==NULL) 
-            fathT->child = newT;
-        else{
-            broT=fathT->child;
-            while(broT->subbro)
-                broT=broT->subbro;
-            broT->subbro=newT;
+    else {
+        if (father != "") {
+            fathT = SearchByName(T, father);
+            newT->parent = fathT;
+            if (!fathT->child)
+                fathT->child = newT;
+            else {
+                broT = fathT->child;
+                while (broT->subbro)
+                    broT = broT->subbro;
+                broT->subbro = newT;
+            }
+            newT->depth = fathT->depth + 1;
         }
-        newT->depth = fathT->depth + 1;
     }
-    
     return T;
 }
 
 //关系溯源（输入两人姓名，确定其关系）  
 //家谱树已经通过出生日期排序，修改为通过深度确定辈分，下标确定年龄
 //(Tree结构体,"名字1","名字2")  输出 print内容，返回值为空
- void Relation(Tree T, char* name1, char* name2) {
+void Relation(Tree T, char* name1, char* name2) {
      Tree Person1 = (Tree)malloc(sizeof(struct TNode));
      Tree Person2 = (Tree)malloc(sizeof(struct TNode));
      Person1 = SearchByName(T, name1);
@@ -277,6 +279,7 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
      free(Person2);
      return;
  }
+ 
 
 //修改成员信息 
 // (修改的节点，"名字"，生日节点，bool婚否，"住址"，bool健在，死亡节点）  返回->该节点
@@ -401,9 +404,9 @@ void  RemindBirth(Tree T,Date date){
 
 int main() {
     Date Today = CreateTime(2024,1,1);
-    Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, NULL, false, 2005, 1, 1);
+    Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
     Insert(T,"祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false,2011 , 1, 2);
-    //Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
+    Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
     //Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
     //Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
     //Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
@@ -411,8 +414,8 @@ int main() {
     //Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true,0,0,0);
     //Date Dan_Birth = CreateTime(2004, 2, 12);
     //Modify(T, "狗蛋",Dan_Birth, true, "二蛋", true,NULL);
-    //RemindBirth(T, Today);
     printf("%s\n", T->name);
+    printf("%d\n", T->depth);
     printf("%d.%d.%d\n", T->birth->year, T->birth->month, T->birth->day);
     printf("%s\n", T->address);
     printf("%d.%d.%d\n", T->death->year, T->death->month, T->death->day);
