@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 //需要实现插入，删除，查找，添加，判断
 public class JavaGUI {
@@ -58,36 +61,41 @@ public class JavaGUI {
 
     //主函数
     public static void main(String[] args) {
-        new MyFrame().init();
+        new MyFrame();
     }
 }
 class MyFrame extends JFrame{
     Container container;
-    public void init(){
-        
-    }
+    JPanel panel_insert,panel_init;
     public  MyFrame(){
         super("族谱管理系统");
         setVisible(true);
-        this.container=getContentPane();
-        this.container.setLayout(null);
         setSize(1920,1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.container.setBackground(new Color(173, 216, 230));
+        this.container=getContentPane();
+        this.container.setLayout(null);
+        //面板
+        this.panel_init=new JPanel();
+        this.panel_init.setBackground(new Color(173, 216, 230));
+        this.panel_init.setBounds(this.getBounds());
+        this.panel_init.setLayout(null);
+
         //按钮
-        MyBotton mybotton=new MyBotton();
-        this.container.add(mybotton.b_insert);
-        this.container.add(mybotton.b_search);
-        this.container.add(mybotton.b_del);
-        setVisible(true);
+        MyButton mybutton=new MyButton(this);
+        this.panel_init.add(mybutton.b_insert);
+        this.panel_init.add(mybutton.b_search);
+        this.panel_init.add(mybutton.b_del);
+        this.container.add(panel_init);
         pack();
 
     }
 }
 //按钮类
-class MyBotton extends JButton{
+class MyButton extends JButton{
     JButton b_insert,b_search,b_del;
-    public MyBotton(){
+    MyFrame frame=null;
+    public MyButton(MyFrame frame){
+        this.frame=frame;
         this.b_insert=new JButton("插入");
         this.b_insert.setBounds(1350,50,150,50);
         this.b_insert.setFont(new Font("宋体",Font.BOLD,30));
@@ -97,5 +105,30 @@ class MyBotton extends JButton{
         this.b_del=new JButton("删除");
         this.b_del.setBounds(1350,250,150,50);
         this.b_del.setFont(new Font("宋体",Font.BOLD,30));
+        //绑定事件
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_insert.addActionListener(myActionListener);
+        this.b_search.addActionListener(myActionListener);
+        this.b_del.addActionListener(myActionListener);
 }
+}
+//事件类
+class MyActionListener implements ActionListener{
+    MyFrame frame=null;
+    public void actionPerformed(ActionEvent e){
+        if(e.getActionCommand()=="插入"){
+            this.frame.container.remove(this.frame.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="查找"){
+            System.out.println("456");
+        }
+        else if(e.getActionCommand()=="删除"){
+            System.out.println("789");
+        }
+    }
+    public MyActionListener(MyFrame frame){
+        this.frame=frame;
+    }
 }
