@@ -58,14 +58,18 @@ public class JavaGUI {
 
     //主函数
     public static void main(String[] args) {
-        JFrame frame = new JFrame("族谱管理系统");
+        new MyFrame().init();
+    }
+}
+class MyFrame extends JFrame{
+    public void init(){
+        JFrame frame=new JFrame("族谱管理系统");
         frame.setSize(1920,1080);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBackground(Color.darkGray);
         frame.setVisible(true);
-        
-        JavaGUI CF=new JavaGUI();
     }
+    public  MyFrame(){
 
-
+    }
 }
