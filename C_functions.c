@@ -158,10 +158,8 @@ Tree Insert(Tree T,const char *father,const char *name,int byear,int bmonth,int 
 //家谱树已经通过出生日期排序，修改为通过深度确定辈分，下标确定年龄
 //(Tree结构体,"名字1","名字2")  输出 print内容，返回值为空
 void Relation(Tree T, char* name1, char* name2) {
-     Tree Person1 = (Tree)malloc(sizeof(struct TNode));
-     Tree Person2 = (Tree)malloc(sizeof(struct TNode));
-     Person1 = SearchByName(T, name1);
-     Person2 = SearchByName(T, name2);
+    Tree Person1 = SearchByName(T, name1);
+    Tree Person2 = SearchByName(T, name2);
      if (Person1 == NULL && Person2 == NULL) {
          printf("家谱中没有 %s 和 %s\n", name1, name2);
          return;
@@ -274,8 +272,6 @@ void Relation(Tree T, char* name1, char* name2) {
          printf("%s 是 %s 的祖先\n", name1, name2);
      else if(depth1 - depth2 > 3)
          printf("%s 是 %s 的祖先\n", name2, name1);
-     free(Person1);
-     free(Person2);
      return;
  }
  
@@ -421,7 +417,7 @@ int main() {
     printf("%d.%d.%d\n", T->birth->year, T->birth->month, T->birth->day);
     printf("%s\n", T->address);
     printf("%d.%d.%d\n", T->death->year, T->death->month,T->death->day);
-    //Relation(T,"阿华2", "阿华1");
+    Relation(T,"阿华2", "阿华1");
     RemindBirth(T, Today);
 }
 
