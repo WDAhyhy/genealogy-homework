@@ -62,21 +62,26 @@ public class JavaGUI {
 
     //主函数
     public static void main(String[] args) {
-        new MyFrame();
+        long T=0;
+        new MyFrame(T);
     }
 }
 class MyFrame extends JFrame{
+    long T,TN;
     Container container;
     MyPanel_insert myPanel_insert;
     MyPanel_init myPanel_init;
     MyPanel_search myPanel_search;
-    public  MyFrame(){
+    MyPanel_searchByName myPanel_searchByName;
+    MyPanel_searchByBirth myPanel_searchByBirth;
+    public  MyFrame(long T){
         super("族谱管理系统");
         setVisible(true);
         setSize(1920,1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.container=getContentPane();
         this.container.setLayout(null);
+        this.T=T;
         //面板
         //初始面板
         this.myPanel_init=new MyPanel_init(this);
@@ -84,6 +89,10 @@ class MyFrame extends JFrame{
         this.myPanel_insert=new MyPanel_insert(this);
         //搜索面板
         this.myPanel_search=new MyPanel_search(this);
+        //依据名字搜索
+        this.myPanel_searchByName=new MyPanel_searchByName(this);
+        //依据生日搜索
+        this.myPanel_searchByBirth=new MyPanel_searchByBirth(this);
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
@@ -252,6 +261,82 @@ class MyPanel_search extends JPanel{
         this.panel_search.add(searchButton.b_return);
     }
 }
+class MyPanel_searchByName extends JPanel{
+    JPanel panel_searchByName;
+    MyFrame frame=null;
+    JTextArea nameJTextArea;
+    SearchByNameButton searchByNameButton;
+    public MyPanel_searchByName(MyFrame frame){
+        this.frame=frame;
+        this.panel_searchByName=new JPanel();
+        this.panel_searchByName.setBackground(new Color(102,0,255));
+        this.panel_searchByName.setBounds(this.frame.getBounds());
+        this.panel_searchByName.setLayout(null);
+        JLabel nameJLabel=new JLabel("名字：");
+        nameJLabel.setBounds(500,250,100,100);
+        nameJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.panel_searchByName.add(nameJLabel);
+        this.nameJTextArea=new JTextArea(1,5);
+        this.nameJTextArea.setBounds(600,285,100,30);
+        this.nameJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        this.panel_searchByName.add(nameJTextArea);
+
+
+        //按钮
+        this.searchByNameButton=new SearchByNameButton(this.frame);
+        this.panel_searchByName.add(this.searchByNameButton.b_search);
+        this.panel_searchByName.add(this.searchByNameButton.b_return);
+
+    }
+}
+class MyPanel_searchByBirth extends JPanel{
+    JPanel panel_searchByBirth;
+    MyFrame frame=null;
+    JTextArea byearJTextArea,bmonthJTextArea,bdayJTextArea;
+    SearchByBirthButton searchByBirthButton;
+    public MyPanel_searchByBirth(MyFrame frame){
+        this.frame=frame;
+        this.panel_searchByBirth=new JPanel();
+        this.panel_searchByBirth.setBackground(new Color(102,0,255));
+        this.panel_searchByBirth.setBounds(this.frame.getBounds());
+        this.panel_searchByBirth.setLayout(null);
+        JLabel birthJLabel= new JLabel("生日：");
+        this.byearJTextArea=new JTextArea(1,5);
+        birthJLabel.setBounds(350,250,100,100);
+        birthJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.byearJTextArea.setBounds(450,285,100,30);
+        this.byearJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        JLabel byearJLabel=new JLabel("年");
+        byearJLabel.setBounds(575,253,100,100);
+        byearJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.bmonthJTextArea=new JTextArea(1,5);
+        this.bmonthJTextArea.setBounds(650,285,100,30);
+        this.bmonthJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        JLabel bmonthJLabel=new JLabel("月");
+        bmonthJLabel.setBounds(775,253,100,100);
+        bmonthJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.bdayJTextArea=new JTextArea(1,5);
+        this.bdayJTextArea.setBounds(850,285,100,30);
+        this.bdayJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        JLabel bdayJLabel=new JLabel("日");
+        bdayJLabel.setBounds(975,253,100,100);
+        bdayJLabel.setFont(new Font("宋体",Font.BOLD,30));
+
+        this.panel_searchByBirth.add(this.byearJTextArea);
+        this.panel_searchByBirth.add(this.bmonthJTextArea);
+        this.panel_searchByBirth.add(this.bdayJTextArea);
+        this.panel_searchByBirth.add(byearJLabel);
+        this.panel_searchByBirth.add(bmonthJLabel);
+        this.panel_searchByBirth.add(bdayJLabel);
+        this.panel_searchByBirth.add(birthJLabel);
+
+        //按钮
+        this.searchByBirthButton=new SearchByBirthButton(this.frame);
+        this.panel_searchByBirth.add(this.searchByBirthButton.b_search);
+        this.panel_searchByBirth.add(this.searchByBirthButton.b_return);
+
+    }
+}
 //按钮类
 class InitButton extends JButton{
     JButton b_insert,b_search,b_del;
@@ -307,6 +392,7 @@ class SearchButton extends JButton{
     MyFrame frame=null;
     public SearchButton(MyFrame frame){
         this.frame=frame;
+
         this.b_SearchByName=new JButton("按名字搜索");
         this.b_SearchByName.setBounds(629,100,300,100);
         this.b_SearchByName.setFont(new Font("宋体",Font.BOLD,30));
@@ -328,8 +414,46 @@ class SearchButton extends JButton{
         this.b_SearchByName.addActionListener(myActionListener);
     }
 }
-
-
+class SearchByNameButton extends JButton{
+    JButton b_search,b_return;
+    MyFrame frame=null;
+    public SearchByNameButton(MyFrame frame){
+        this.frame=frame;
+        this.b_search=new JButton("搜索");
+        this.b_search.setActionCommand("依据名字搜索");
+        this.b_search.setBounds(1200,700,100,50);
+        this.b_search.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_search.setForeground(Color.red);
+        this.b_return=new JButton("返回上一级");
+        this.b_return.setBounds(1320,700,200,50);
+        this.b_return.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_return.setForeground(Color.gray);
+        //绑定事件
+        MyActionListener myactionListener=new MyActionListener(this.frame);
+        this.b_search.addActionListener(myactionListener);
+        this.b_return.addActionListener(myactionListener);
+    }
+}
+class SearchByBirthButton extends JButton{
+    JButton b_search,b_return;
+    MyFrame frame=null;
+    public SearchByBirthButton(MyFrame frame){
+        this.frame=frame;
+        this.b_search=new JButton("搜索");
+        this.b_search.setActionCommand("依据生日搜索");
+        this.b_search.setBounds(1200,700,100,50);
+        this.b_search.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_search.setForeground(Color.red);
+        this.b_return=new JButton("返回上一级");
+        this.b_return.setBounds(1320,700,200,50);
+        this.b_return.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_return.setForeground(Color.gray);
+        //绑定事件
+        MyActionListener myactionListener=new MyActionListener(this.frame);
+        this.b_search.addActionListener(myactionListener);
+        this.b_return.addActionListener(myactionListener);
+    }
+}
 
 //事件类
 class MyActionListener implements ActionListener{
@@ -351,7 +475,6 @@ class MyActionListener implements ActionListener{
             System.out.println("789");
         }
         else if(e.getActionCommand()=="提交"){
-            long T=0;
             boolean alive;
             int dday=-1,dmonth=-1,dyear=-1;
             JavaGUI ctj=new JavaGUI();
@@ -373,7 +496,7 @@ class MyActionListener implements ActionListener{
                 dday=Integer.parseInt(this.frame.myPanel_insert.ddayJTextArea.getText());
             }
             
-            T=ctj.insert(T, father, name, byear, bmonth, bday, alive, address, alive, dyear, dmonth, dday);
+            this.frame.T=ctj.insert(this.frame.T, father, name, byear, bmonth, bday, alive, address, alive, dyear, dmonth, dday);
             this.frame.container.remove(this.frame.myPanel_insert.panel_insert);
             this.frame.container.add(this.frame.myPanel_init.panel_init);
             this.frame.container.revalidate();
@@ -403,10 +526,43 @@ class MyActionListener implements ActionListener{
             }
         }
         else if(e.getActionCommand()=="按名字搜索"){
-            System.out.println(123);
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_searchByName.panel_searchByName);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
         }
         else if (e.getActionCommand()=="按生日搜索"){
-            System.out.println(456);
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_searchByBirth.panel_searchByBirth);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="依据名字搜索"){
+            
+            String name=this.frame.myPanel_searchByName.nameJTextArea.getText();
+            JavaGUI ctj=new JavaGUI();
+            this.frame.TN=ctj.searchByName(this.frame.T, name);
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="依据生日搜索"){
+            int byear=Integer.parseInt(this.frame.myPanel_searchByBirth.byearJTextArea.getText());
+            int bmonth=Integer.parseInt(this.frame.myPanel_searchByBirth.bmonthJTextArea.getText());
+            int bday=Integer.parseInt(this.frame.myPanel_searchByBirth.bdayJTextArea.getText());
+            JavaGUI ctj=new JavaGUI();
+            this.frame.TN=ctj.searchByBirth(this.frame.T, byear, bmonth, bday);
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="返回上一级"){
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_search.panel_search);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
         }
     }
     public MyActionListener(MyFrame frame){
