@@ -69,7 +69,7 @@ class MyFrame extends JFrame{
     Container container;
     MyPanel_insert myPanel_insert;
     MyPanel_init myPanel_init;
-
+    MyPanel_search myPanel_search;
     public  MyFrame(){
         super("族谱管理系统");
         setVisible(true);
@@ -82,6 +82,8 @@ class MyFrame extends JFrame{
         this.myPanel_init=new MyPanel_init(this);
         //插入面板
         this.myPanel_insert=new MyPanel_insert(this);
+        //搜索面板
+        this.myPanel_search=new MyPanel_search(this);
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
@@ -89,13 +91,13 @@ class MyFrame extends JFrame{
 }
 //面板类
 class MyPanel_insert extends JPanel{
-    JPanel panel_insert;
+    JPanel panel_insert,panel_death;
     InsertButton insertButton;
     MyFrame frame=null;
     JTextArea fatherJTextArea,nameJTextArea,byearJTextArea,bmonthJTextArea,bdayJTextArea,
         addressJTextArea,dyearJTextArea,dmonthJTextArea,ddayJTextArea;
-    JRadioButton aliveYesJRadioButton,aliveNoJRadioButton;
     ButtonGroup aliveButtonGroup;
+    JRadioButton aliveYesJRadioButton,aliveNoJRadioButton;
     public MyPanel_insert(MyFrame frame){
         this.frame=frame;
         this.panel_insert=new JPanel();
@@ -151,16 +153,9 @@ class MyPanel_insert extends JPanel{
         this.addressJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
 
         JLabel aliveJLabel=new JLabel("存活：");
-        this.aliveYesJRadioButton=new JRadioButton("是");
-        this.aliveNoJRadioButton=new JRadioButton("否");
-        this.aliveButtonGroup=new ButtonGroup();
-        this.aliveButtonGroup.add(this.aliveNoJRadioButton);
-        this.aliveButtonGroup.add(this.aliveYesJRadioButton);
+
         aliveJLabel.setBounds(50,450,100,100);
         aliveJLabel.setFont(new Font("宋体",Font.BOLD,30));
-        this.aliveYesJRadioButton.setBounds(150,485,40,30);
-        this.aliveNoJRadioButton.setBounds(200,485,40,30);
-
 
         JLabel deathJLabel=new JLabel("死亡日期：");
         this.dyearJTextArea=new JTextArea(1,5);
@@ -183,10 +178,20 @@ class MyPanel_insert extends JPanel{
         JLabel ddayJLabel=new JLabel("日");
         ddayJLabel.setBounds(675,553,100,100);
         ddayJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.ddayJTextArea.setEditable(false);
+        this.dmonthJTextArea.setEditable(false);
+        this.dyearJTextArea.setEditable(false);
         //插入部分的按钮
         this.insertButton=new InsertButton(this.frame);
         this.panel_insert.add(this.insertButton.b_return);
         this.panel_insert.add(this.insertButton.b_submit);
+        this.panel_insert.add(this.insertButton.aliveYesJRadioButton);
+        this.panel_insert.add(this.insertButton.aliveNoJRadioButton);
+        this.aliveButtonGroup=new ButtonGroup();
+        this.aliveButtonGroup.add(this.insertButton.aliveYesJRadioButton);
+        this.aliveButtonGroup.add(this.insertButton.aliveNoJRadioButton);
+        this.aliveNoJRadioButton=this.insertButton.aliveNoJRadioButton;
+        this.aliveYesJRadioButton=this.insertButton.aliveYesJRadioButton;
 
         this.panel_insert.add(fatherJLabel);
         this.panel_insert.add(fatherJTextArea);
@@ -202,8 +207,7 @@ class MyPanel_insert extends JPanel{
         this.panel_insert.add(addressJLabel);
         this.panel_insert.add(addressJTextArea);
         this.panel_insert.add(aliveJLabel);
-        this.panel_insert.add(aliveYesJRadioButton);
-        this.panel_insert.add(aliveNoJRadioButton);
+
         this.panel_insert.add(deathJLabel);
         this.panel_insert.add(dyearJTextArea);
         this.panel_insert.add(dyearJLabel);
@@ -211,6 +215,8 @@ class MyPanel_insert extends JPanel{
         this.panel_insert.add(dmonthJLabel);
         this.panel_insert.add(ddayJLabel);
         this.panel_insert.add(ddayJTextArea);
+
+        
     }
 }
 class MyPanel_init extends JPanel{
@@ -218,7 +224,6 @@ class MyPanel_init extends JPanel{
     InitButton initButton;
     MyFrame frame=null;
     public MyPanel_init(MyFrame frame){
-        super();
         this.frame=frame;
         this.panel_init=new JPanel();
         this.panel_init.setBackground(new Color(173, 216, 230));
@@ -228,6 +233,23 @@ class MyPanel_init extends JPanel{
         this.panel_init.add(this.initButton.b_insert);
         this.panel_init.add(this.initButton.b_search);
         this.panel_init.add(this.initButton.b_del);
+    }
+}
+class MyPanel_search extends JPanel{
+    JPanel panel_search;
+    SearchButton searchButton;
+    MyFrame frame=null;
+    public MyPanel_search(MyFrame frame){
+        this.frame=frame;
+        this.panel_search=new JPanel();
+        this.panel_search.setBackground(new Color(230,230,250));
+        this.panel_search.setBounds(this.frame.getBounds());
+        this.panel_search.setLayout(null);
+        //按钮
+        searchButton=new SearchButton(this.frame);
+        this.panel_search.add(searchButton.b_SearchByName);
+        this.panel_search.add(searchButton.b_SearchByBirth);
+        this.panel_search.add(searchButton.b_return);
     }
 }
 //按钮类
@@ -254,6 +276,8 @@ class InitButton extends JButton{
 }
 class InsertButton extends JButton{
     JButton b_submit,b_return;
+    JRadioButton aliveYesJRadioButton,aliveNoJRadioButton;
+    ButtonGroup aliveButtonGroup;
     MyFrame frame=null;
     public InsertButton(MyFrame frame){
         this.frame=frame;
@@ -265,12 +289,47 @@ class InsertButton extends JButton{
         this.b_return.setBounds(1400,700,100,50);
         this.b_return.setFont(new Font("宋体",Font.BOLD,30));
         this.b_return.setForeground(Color.gray);
+
+        this.aliveYesJRadioButton=new JRadioButton("是");
+        this.aliveNoJRadioButton=new JRadioButton("否");
+        this.aliveYesJRadioButton.setBounds(150,485,40,30);
+        this.aliveNoJRadioButton.setBounds(200,485,40,30);
         //绑定事件
         MyActionListener myActionListener=new MyActionListener(this.frame);
         this.b_return.addActionListener(myActionListener);
         this.b_submit.addActionListener(myActionListener);
+        this.aliveNoJRadioButton.addActionListener(myActionListener);
+        this.aliveYesJRadioButton.addActionListener(myActionListener);
     }
 }
+class SearchButton extends JButton{
+    JButton b_SearchByName,b_SearchByBirth,b_return;
+    MyFrame frame=null;
+    public SearchButton(MyFrame frame){
+        this.frame=frame;
+        this.b_SearchByName=new JButton("按名字搜索");
+        this.b_SearchByName.setBounds(629,100,300,100);
+        this.b_SearchByName.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_SearchByName.setForeground(Color.red);
+        
+        this.b_SearchByBirth=new JButton("按生日搜索");
+        this.b_SearchByBirth.setBounds(629,300,300,100);
+        this.b_SearchByBirth.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_SearchByBirth.setForeground(Color.red);
+
+        this.b_return=new JButton("返回");
+        this.b_return.setBounds(629,500,300,100);
+        this.b_return.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_return.setForeground(Color.gray);
+        //绑定事件
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_return.addActionListener(myActionListener);
+        this.b_SearchByBirth.addActionListener(myActionListener);
+        this.b_SearchByName.addActionListener(myActionListener);
+    }
+}
+
+
 
 //事件类
 class MyActionListener implements ActionListener{
@@ -283,7 +342,10 @@ class MyActionListener implements ActionListener{
             this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="查找"){
-            System.out.println("456");
+            this.frame.container.remove(this.frame.myPanel_init.panel_init);
+            this.frame.container.add(this.frame.myPanel_search.panel_search);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="删除"){
             System.out.println("789");
@@ -316,6 +378,35 @@ class MyActionListener implements ActionListener{
             this.frame.container.add(this.frame.myPanel_init.panel_init);
             this.frame.container.revalidate();
             this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="返回"){
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="否"){
+            if(this.frame.myPanel_insert.aliveNoJRadioButton.isSelected()){
+                this.frame.myPanel_insert.ddayJTextArea.setEditable(true);
+                this.frame.myPanel_insert.dmonthJTextArea.setEditable(true);
+                this.frame.myPanel_insert.dyearJTextArea.setEditable(true);
+            }
+        }
+        else if(e.getActionCommand()=="是"){
+            if(this.frame.myPanel_insert.aliveYesJRadioButton.isSelected()){
+                this.frame.myPanel_insert.ddayJTextArea.setText("");
+                this.frame.myPanel_insert.dmonthJTextArea.setText("");
+                this.frame.myPanel_insert.dyearJTextArea.setText("");
+                this.frame.myPanel_insert.ddayJTextArea.setEditable(false);
+                this.frame.myPanel_insert.dmonthJTextArea.setEditable(false);
+                this.frame.myPanel_insert.dyearJTextArea.setEditable(false);
+            }
+        }
+        else if(e.getActionCommand()=="按名字搜索"){
+            System.out.println(123);
+        }
+        else if (e.getActionCommand()=="按生日搜索"){
+            System.out.println(456);
         }
     }
     public MyActionListener(MyFrame frame){
