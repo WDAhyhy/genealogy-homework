@@ -67,13 +67,14 @@ public class JavaGUI {
     }
 }
 class MyFrame extends JFrame{
-    long T,TN;
+    long T=0,TN=0;
     Container container;
     MyPanel_insert myPanel_insert;
     MyPanel_init myPanel_init;
     MyPanel_search myPanel_search;
     MyPanel_searchByName myPanel_searchByName;
     MyPanel_searchByBirth myPanel_searchByBirth;
+    MyPanel_information myPanel_information;
     public  MyFrame(long T){
         super("族谱管理系统");
         setVisible(true);
@@ -93,6 +94,8 @@ class MyFrame extends JFrame{
         this.myPanel_searchByName=new MyPanel_searchByName(this);
         //依据生日搜索
         this.myPanel_searchByBirth=new MyPanel_searchByBirth(this);
+        //信息面板
+        this.myPanel_information=new MyPanel_information(this,this.TN);
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
@@ -108,6 +111,7 @@ class MyPanel_insert extends JPanel{
     ButtonGroup aliveButtonGroup;
     JRadioButton aliveYesJRadioButton,aliveNoJRadioButton;
     public MyPanel_insert(MyFrame frame){
+        super();
         this.frame=frame;
         this.panel_insert=new JPanel();
         this.panel_insert.setBackground(Color.pink);
@@ -337,6 +341,19 @@ class MyPanel_searchByBirth extends JPanel{
 
     }
 }
+class MyPanel_information extends MyPanel_insert{
+    MyFrame frame=null;
+    JPanel panel_information;
+    long TN;
+    public MyPanel_information(MyFrame frame,long TN){
+        super(frame);
+        this.TN=TN;
+        this.frame=frame;
+        this.panel_insert.remove(this.insertButton.b_submit);
+        this.panel_information=this.panel_insert;
+    }
+
+}
 //按钮类
 class InitButton extends JButton{
     JButton b_insert,b_search,b_del;
@@ -539,11 +556,37 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="依据名字搜索"){
             
+            JavaGUI.TNode T1;
             String name=this.frame.myPanel_searchByName.nameJTextArea.getText();
             JavaGUI ctj=new JavaGUI();
             this.frame.TN=ctj.searchByName(this.frame.T, name);
             this.frame.container.removeAll();
-            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.add(this.frame.myPanel_information.panel_information);
+            T1=ctj.convertToTree(this.frame.TN);
+            if(T1.parent==0){
+                this.frame.myPanel_information.fatherJTextArea.setText("");
+            }
+            else{
+                this.frame.myPanel_information.fatherJTextArea.setText(ctj.convertToTree(T1.parent).name);
+            }
+            this.frame.myPanel_information.nameJTextArea.setText(T1.name);
+            this.frame.myPanel_information.addressJTextArea.setText(T1.address);
+            this.frame.myPanel_information.aliveYesJRadioButton.setSelected(T1.alive);
+            this.frame.myPanel_information.aliveNoJRadioButton.setSelected(!T1.alive);
+            this.frame.myPanel_information.byearJTextArea.setText(Integer.toString(T1.birth.year));
+            this.frame.myPanel_information.bmonthJTextArea.setText(Integer.toString(T1.birth.month));
+            this.frame.myPanel_information.bdayJTextArea.setText(Integer.toString(T1.birth.day));
+            if(T1.death.year==-1){
+                this.frame.myPanel_information.dyearJTextArea.setText("");
+            this.frame.myPanel_information.dmonthJTextArea.setText("");
+            this.frame.myPanel_information.ddayJTextArea.setText("");
+            }
+            else{
+                this.frame.myPanel_information.dyearJTextArea.setText(Integer.toString(T1.death.year));
+                this.frame.myPanel_information.dmonthJTextArea.setText(Integer.toString(T1.death.month));
+                this.frame.myPanel_information.ddayJTextArea.setText(Integer.toString(T1.death.day));
+            }
+            
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
