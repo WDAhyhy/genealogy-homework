@@ -289,13 +289,9 @@ Tree Modify(Tree T,const char* name,Date birth,bool marriage,const char *address
     T->marriage=marriage;
     T->address=strdup(address);
     T->alive=alive;
-    if(!alive){
-        T->death->day=death->day;
-        T->death->month=death->month;
-        T->death->year=death->year;
-    }
-    else
-        T->death=NULL;
+    T->death->day=death->day;
+    T->death->month=death->month;
+    T->death->year=death->year;
     return T;
 }
 
@@ -544,12 +540,16 @@ JNIEXPORT jlong JNICALL Java_JavaGUI_modify(JNIEnv *env,jobject obj,jlong T,jstr
    birth->month=bmonth;
    birth->year=byear;
    if(!alive){
-       death->day=dday;
-       death->month=dmonth;
-       death->year=dyear;
+        death->day=dday;
+        death->month=dmonth;
+        death->year=dyear;
    }
-   else
-       death=NULL;
+   else{
+        death->day=-1;
+        death->month=-1;
+        death->year=-1;
+   }
+       
    T1=Modify(T1,c_name,birth,marriage,c_address,alive,death);
    (*env)->ReleaseStringUTFChars(env,name,c_name);
    (*env)->ReleaseStringUTFChars(env,address,c_address);

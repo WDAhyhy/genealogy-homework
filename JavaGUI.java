@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+
 //需要实现插入，删除，查找，添加，判断
 public class JavaGUI {
     //加载C库
@@ -191,9 +192,9 @@ class MyPanel_insert extends JPanel{
         JLabel ddayJLabel=new JLabel("日");
         ddayJLabel.setBounds(675,553,100,100);
         ddayJLabel.setFont(new Font("宋体",Font.BOLD,30));
-        this.ddayJTextArea.setEditable(false);
-        this.dmonthJTextArea.setEditable(false);
-        this.dyearJTextArea.setEditable(false);
+        this.ddayJTextArea.setEnabled(false);
+        this.dmonthJTextArea.setEnabled(false);
+        this.dyearJTextArea.setEnabled(false);
         //插入部分的按钮
         this.insertButton=new InsertButton(this.frame);
         this.panel_insert.add(this.insertButton.b_return);
@@ -205,6 +206,7 @@ class MyPanel_insert extends JPanel{
         this.aliveButtonGroup.add(this.insertButton.aliveNoJRadioButton);
         this.aliveNoJRadioButton=this.insertButton.aliveNoJRadioButton;
         this.aliveYesJRadioButton=this.insertButton.aliveYesJRadioButton;
+        
 
         this.panel_insert.add(fatherJLabel);
         this.panel_insert.add(fatherJTextArea);
@@ -345,12 +347,26 @@ class MyPanel_information extends MyPanel_insert{
     MyFrame frame=null;
     JPanel panel_information;
     long TN;
+    InformationButton informationButton;
     public MyPanel_information(MyFrame frame,long TN){
         super(frame);
         this.TN=TN;
         this.frame=frame;
-        this.panel_insert.remove(this.insertButton.b_submit);
+        
         this.panel_information=this.panel_insert;
+        
+        //按钮
+        this.informationButton=new InformationButton(this.frame);
+        this.aliveNoJRadioButton=this.informationButton.aliveNoJRadioButton;
+        this.aliveYesJRadioButton=this.informationButton.aliveYesJRadioButton;
+
+        
+        this.panel_insert.remove(this.insertButton.b_submit);
+        this.panel_insert.remove(this.insertButton.aliveNoJRadioButton);
+        this.panel_insert.remove(this.insertButton.aliveYesJRadioButton);
+        this.panel_insert.add(this.informationButton.aliveNoJRadioButton);
+        this.panel_insert.add(this.informationButton.aliveYesJRadioButton);
+        this.panel_information.add(this.informationButton.b_modify);
     }
 
 }
@@ -402,6 +418,8 @@ class InsertButton extends JButton{
         this.b_submit.addActionListener(myActionListener);
         this.aliveNoJRadioButton.addActionListener(myActionListener);
         this.aliveYesJRadioButton.addActionListener(myActionListener);
+        this.aliveNoJRadioButton.setActionCommand("插入否");
+        this.aliveYesJRadioButton.setActionCommand("插入是");
     }
 }
 class SearchButton extends JButton{
@@ -471,7 +489,32 @@ class SearchByBirthButton extends JButton{
         this.b_return.addActionListener(myactionListener);
     }
 }
-
+class InformationButton extends InsertButton{
+    MyFrame frame=null;
+    JButton b_modify,b_confirm;
+    ButtonGroup aliveButtonGroup;
+    public InformationButton(MyFrame frame){
+        super(frame);
+        this.frame=frame;
+        this.b_modify=new JButton("修改");
+        this.b_modify.setBounds(1200,700,100,50);
+        this.b_modify.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_confirm=new JButton("确认");
+        this.b_confirm.setBounds(1200,700,100,50);
+        this.b_confirm.setFont(new Font("宋体",Font.BOLD,30));
+        this.aliveNoJRadioButton.setActionCommand("修改否");
+        this.aliveYesJRadioButton.setActionCommand("修改是");
+        this.aliveButtonGroup=new ButtonGroup();
+        this.aliveButtonGroup.add(this.aliveNoJRadioButton);
+        this.aliveButtonGroup.add(this.aliveYesJRadioButton);
+        //绑定事件
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_confirm.addActionListener(myActionListener);
+        this.b_modify.addActionListener(myActionListener);
+        this.aliveYesJRadioButton.addActionListener(myActionListener);
+        this.aliveNoJRadioButton.addActionListener(myActionListener);
+    }
+}
 //事件类
 class MyActionListener implements ActionListener{
     MyFrame frame=null;
@@ -525,30 +568,53 @@ class MyActionListener implements ActionListener{
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
-        else if(e.getActionCommand()=="否"){
+        else if(e.getActionCommand()=="插入否"){
             if(this.frame.myPanel_insert.aliveNoJRadioButton.isSelected()){
-                this.frame.myPanel_insert.ddayJTextArea.setEditable(true);
-                this.frame.myPanel_insert.dmonthJTextArea.setEditable(true);
-                this.frame.myPanel_insert.dyearJTextArea.setEditable(true);
+                this.frame.myPanel_insert.ddayJTextArea.setEnabled(true);
+                this.frame.myPanel_insert.dmonthJTextArea.setEnabled(true);
+                this.frame.myPanel_insert.dyearJTextArea.setEnabled(true);
             }
         }
-        else if(e.getActionCommand()=="是"){
+        else if(e.getActionCommand()=="插入是"){
             if(this.frame.myPanel_insert.aliveYesJRadioButton.isSelected()){
                 this.frame.myPanel_insert.ddayJTextArea.setText("");
                 this.frame.myPanel_insert.dmonthJTextArea.setText("");
                 this.frame.myPanel_insert.dyearJTextArea.setText("");
-                this.frame.myPanel_insert.ddayJTextArea.setEditable(false);
-                this.frame.myPanel_insert.dmonthJTextArea.setEditable(false);
-                this.frame.myPanel_insert.dyearJTextArea.setEditable(false);
+                this.frame.myPanel_insert.ddayJTextArea.setEnabled(false);
+                this.frame.myPanel_insert.dmonthJTextArea.setEnabled(false);
+                this.frame.myPanel_insert.dyearJTextArea.setEnabled(false);
+
+            }
+        }
+        else if(e.getActionCommand()=="修改否"){
+            if(this.frame.myPanel_information.aliveNoJRadioButton.isSelected()){
+                this.frame.myPanel_information.ddayJTextArea.setEnabled(true);
+                this.frame.myPanel_information.dmonthJTextArea.setEnabled(true);
+                this.frame.myPanel_information.dyearJTextArea.setEnabled(true);
+            }
+        }
+        else if(e.getActionCommand()=="修改是"){
+            if(this.frame.myPanel_information.aliveYesJRadioButton.isSelected()){
+                this.frame.myPanel_information.ddayJTextArea.setText("");
+                this.frame.myPanel_information.dmonthJTextArea.setText("");
+                this.frame.myPanel_information.dyearJTextArea.setText("");
+                this.frame.myPanel_information.ddayJTextArea.setEnabled(false);
+                this.frame.myPanel_information.dmonthJTextArea.setEnabled(false);
+                this.frame.myPanel_information.dyearJTextArea.setEnabled(false);
+
             }
         }
         else if(e.getActionCommand()=="按名字搜索"){
+            this.frame.myPanel_searchByName.nameJTextArea.setText("");
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_searchByName.panel_searchByName);
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
         else if (e.getActionCommand()=="按生日搜索"){
+            this.frame.myPanel_searchByBirth.byearJTextArea.setText("");
+            this.frame.myPanel_searchByBirth.bmonthJTextArea.setText("");
+            this.frame.myPanel_searchByBirth.bdayJTextArea.setText("");
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_searchByBirth.panel_searchByBirth);
             this.frame.container.revalidate();
@@ -559,8 +625,66 @@ class MyActionListener implements ActionListener{
             JavaGUI.TNode T1;
             String name=this.frame.myPanel_searchByName.nameJTextArea.getText();
             JavaGUI ctj=new JavaGUI();
+
             this.frame.TN=ctj.searchByName(this.frame.T, name);
+            
+            
+            T1=ctj.convertToTree(this.frame.TN);
+            
+            if(T1.parent==0){
+                this.frame.myPanel_information.fatherJTextArea.setText("");
+            }
+            else{
+                this.frame.myPanel_information.fatherJTextArea.setText(ctj.convertToTree(T1.parent).name);
+            }
+            
+            this.frame.myPanel_information.nameJTextArea.setText(T1.name);
+            this.frame.myPanel_information.addressJTextArea.setText(T1.address);
+            this.frame.myPanel_information.aliveYesJRadioButton.setSelected(T1.alive);
+            this.frame.myPanel_information.aliveNoJRadioButton.setSelected(!T1.alive);
+            this.frame.myPanel_information.byearJTextArea.setText(Integer.toString(T1.birth.year));
+            this.frame.myPanel_information.bmonthJTextArea.setText(Integer.toString(T1.birth.month));
+            this.frame.myPanel_information.bdayJTextArea.setText(Integer.toString(T1.birth.day));
+            
+            if(T1.death.year==-1){
+                System.out.println(55555);
+                this.frame.myPanel_information.dyearJTextArea.setText("");
+                this.frame.myPanel_information.dmonthJTextArea.setText("");
+                this.frame.myPanel_information.ddayJTextArea.setText("");
+            }
+            else{
+                this.frame.myPanel_information.dyearJTextArea.setText(Integer.toString(T1.death.year));
+                this.frame.myPanel_information.dmonthJTextArea.setText(Integer.toString(T1.death.month));
+                this.frame.myPanel_information.ddayJTextArea.setText(Integer.toString(T1.death.day));
+            }
+            
+            //不可修改
+            this.frame.myPanel_information.fatherJTextArea.setEnabled(false);
+            this.frame.myPanel_information.nameJTextArea.setEnabled(false);
+            this.frame.myPanel_information.addressJTextArea.setEnabled(false);
+            this.frame.myPanel_information.aliveYesJRadioButton.setEnabled(false);
+            this.frame.myPanel_information.aliveNoJRadioButton.setEnabled(false);
+            this.frame.myPanel_information.byearJTextArea.setEnabled(false);
+            this.frame.myPanel_information.bmonthJTextArea.setEnabled(false);
+            this.frame.myPanel_information.bdayJTextArea.setEnabled(false);
+            this.frame.myPanel_information.dyearJTextArea.setEnabled(false);
+            this.frame.myPanel_information.dmonthJTextArea.setEnabled(false);
+            this.frame.myPanel_information.ddayJTextArea.setEnabled(false);
+
+
             this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_information.panel_information);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+            
+        }
+        else if(e.getActionCommand()=="依据生日搜索"){
+            JavaGUI.TNode T1;
+            int byear=Integer.parseInt(this.frame.myPanel_searchByBirth.byearJTextArea.getText());
+            int bmonth=Integer.parseInt(this.frame.myPanel_searchByBirth.bmonthJTextArea.getText());
+            int bday=Integer.parseInt(this.frame.myPanel_searchByBirth.bdayJTextArea.getText());
+            JavaGUI ctj=new JavaGUI();
+            this.frame.TN=ctj.searchByBirth(this.frame.T, byear, bmonth, bday);
             this.frame.container.add(this.frame.myPanel_information.panel_information);
             T1=ctj.convertToTree(this.frame.TN);
             if(T1.parent==0){
@@ -586,17 +710,68 @@ class MyActionListener implements ActionListener{
                 this.frame.myPanel_information.dmonthJTextArea.setText(Integer.toString(T1.death.month));
                 this.frame.myPanel_information.ddayJTextArea.setText(Integer.toString(T1.death.day));
             }
-            
+            //不可修改
+            this.frame.myPanel_information.fatherJTextArea.setEnabled(false);
+            this.frame.myPanel_information.nameJTextArea.setEnabled(false);
+            this.frame.myPanel_information.addressJTextArea.setEnabled(false);
+            this.frame.myPanel_information.aliveYesJRadioButton.setEnabled(false);
+            this.frame.myPanel_information.aliveNoJRadioButton.setEnabled(false);
+            this.frame.myPanel_information.byearJTextArea.setEnabled(false);
+            this.frame.myPanel_information.bmonthJTextArea.setEnabled(false);
+            this.frame.myPanel_information.bdayJTextArea.setEnabled(false);
+            this.frame.myPanel_information.dyearJTextArea.setEnabled(false);
+            this.frame.myPanel_information.dmonthJTextArea.setEnabled(false);
+            this.frame.myPanel_information.ddayJTextArea.setEnabled(false);
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_information.panel_information);
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
-        else if(e.getActionCommand()=="依据生日搜索"){
-            int byear=Integer.parseInt(this.frame.myPanel_searchByBirth.byearJTextArea.getText());
-            int bmonth=Integer.parseInt(this.frame.myPanel_searchByBirth.bmonthJTextArea.getText());
-            int bday=Integer.parseInt(this.frame.myPanel_searchByBirth.bdayJTextArea.getText());
+        else if(e.getActionCommand()=="修改"){
+            this.frame.myPanel_information.nameJTextArea.setEnabled(true);
+            this.frame.myPanel_information.addressJTextArea.setEnabled(true);
+            this.frame.myPanel_information.aliveYesJRadioButton.setEnabled(true);
+            this.frame.myPanel_information.aliveNoJRadioButton.setEnabled(true);
+            this.frame.myPanel_information.byearJTextArea.setEnabled(true);
+            this.frame.myPanel_information.bmonthJTextArea.setEnabled(true);
+            this.frame.myPanel_information.bdayJTextArea.setEnabled(true);
+            if(this.frame.myPanel_information.aliveNoJRadioButton.isSelected()){
+                this.frame.myPanel_information.dyearJTextArea.setEnabled(true);
+                this.frame.myPanel_information.dmonthJTextArea.setEnabled(true);
+                this.frame.myPanel_information.ddayJTextArea.setEnabled(true);
+            }
+            
+            //按钮更换
+            this.frame.myPanel_information.panel_information.remove(this.frame.myPanel_information.informationButton.b_modify);
+            this.frame.myPanel_information.panel_information.add(this.frame.myPanel_information.informationButton.b_confirm);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="确认"){
+            boolean alive;
+            int dday=-1,dmonth=-1,dyear=-1;
             JavaGUI ctj=new JavaGUI();
-            this.frame.TN=ctj.searchByBirth(this.frame.T, byear, bmonth, bday);
-            this.frame.container.removeAll();
+
+            String name=this.frame.myPanel_information.nameJTextArea.getText();
+            int byear=Integer.parseInt(this.frame.myPanel_information.byearJTextArea.getText());
+            int bmonth=Integer.parseInt(this.frame.myPanel_information.bmonthJTextArea.getText());
+            int bday=Integer.parseInt(this.frame.myPanel_information.bdayJTextArea.getText());
+            String address=this.frame.myPanel_information.addressJTextArea.getText();
+            
+            if(this.frame.myPanel_information.aliveYesJRadioButton.isSelected()){
+                alive=true;
+            }
+            else{
+                alive=false;
+                System.out.println(6666666);
+                dyear=Integer.parseInt(this.frame.myPanel_information.dyearJTextArea.getText());
+                dmonth=Integer.parseInt(this.frame.myPanel_information.dmonthJTextArea.getText());
+                dday=Integer.parseInt(this.frame.myPanel_information.ddayJTextArea.getText());
+            }
+            this.frame.TN=ctj.modify(this.frame.TN, name, byear, bmonth, bday, alive, address, alive, dyear, dmonth, dday);
+            this.frame.myPanel_information.panel_information.remove(this.frame.myPanel_information.informationButton.b_confirm);
+            this.frame.myPanel_information.panel_information.add(this.frame.myPanel_information.informationButton.b_modify);
+            this.frame.container.remove(this.frame.myPanel_information.panel_information);
             this.frame.container.add(this.frame.myPanel_init.panel_init);
             this.frame.container.revalidate();
             this.frame.container.repaint();
