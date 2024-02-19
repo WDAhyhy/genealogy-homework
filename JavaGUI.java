@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 
+
+
 //需要实现插入，删除，查找，添加，判断
 public class JavaGUI {
     //加载C库
@@ -76,6 +78,7 @@ class MyFrame extends JFrame{
     MyPanel_searchByName myPanel_searchByName;
     MyPanel_searchByBirth myPanel_searchByBirth;
     MyPanel_information myPanel_information;
+    MyPanel_graph myPanel_graph;
     public  MyFrame(long T){
         super("族谱管理系统");
         setVisible(true);
@@ -97,12 +100,113 @@ class MyFrame extends JFrame{
         this.myPanel_searchByBirth=new MyPanel_searchByBirth(this);
         //信息面板
         this.myPanel_information=new MyPanel_information(this,this.TN);
+        //图面板
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
     }
 }
 //面板类
+class MyPanel_graph extends JPanel{
+    MyFrame frame=null;
+    Queue head=null;
+    int depth=1;
+    boolean change;
+    //行的空间大小
+    int[] space=new int[100];
+    //行的对象个数
+    int[] arr=new int[100];
+    public MyPanel_graph(MyFrame frame){
+        this.frame=frame;
+        this.setBackground(new Color(203,203,203));
+        this.setBounds(0,0,1350,this.frame.getHeight());
+        this.setLayout(null);
+        //数组初始化
+        for(int i=0;i<99;i++){
+            this.space[i]=0;
+            this.arr[i]=0;
+        }
+            
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        drawTree(g,this.frame.T);
+        //数组初始化
+        for(int i=0;i<99;i++){
+            this.space[i]=0;
+            this.arr[i]=0;
+        }
+    }
+    public void drawTree(Graphics g,long T){
+        if(T==0)
+            return;
+ 
+        JavaGUI ctj=new JavaGUI();
+        int x1,x2;
+        long CT;
+        this.head=AddQ(head, T);
+        x1=drawTRect(g, T);
+        CT=ctj.convertToTree(this.head.TN).child;
+        while(CT!=0){
+            this.head=AddQ(head, CT);
+            x2=drawTRect(g, CT);
+            //20 20
+            g.drawLine(x1+20, 30+(this.depth-2)*100, x2+20,10+(this.depth-1)*100);
+            CT=ctj.convertToTree(CT).subbro;
+        }
+        this.change=false;
+    }
+    public int drawTRect(Graphics g,long T){
+        JavaGUI ctj=new JavaGUI();
+        JavaGUI.TNode TN=ctj.convertToTree(T);
+        this.depth=TN.depth;
+        if(this.change){
+            this.arr[TN.depth]++;
+            
+        }
+        System.out.println(TN.name);
+        System.out.println(this.arr[TN.depth]);
+        this.space[TN.depth]=this.getWidth()/this.arr[TN.depth];
+
+
+        g.setColor(Color.black);
+        g.drawRect((this.arr[TN.depth])*(this.space[TN.depth]/2)-20,10+(TN.depth-1)*100,40,20);
+        g.drawString(TN.name, (this.arr[TN.depth])*(this.space[TN.depth]/2)-17, 25+(TN.depth-1)*100);
+        //返回x坐标
+        return (this.arr[TN.depth])*(this.space[TN.depth]/2)-20;
+        //3 25
+    }
+
+    //下面是队列方法以及类
+    private class Queue{
+        long TN;
+        Queue next;
+        public Queue(long TN){
+            this.TN=TN;
+            this.next=null;
+        }
+    }
+    private Queue AddQ(Queue head,long TN){
+        Queue pNode;
+        Queue newNode=new Queue(TN);
+        if(head==null){
+            head=newNode;
+        }
+        else{
+            pNode=head;
+            while (pNode.next!=null) {
+                pNode=pNode.next;
+            }
+            pNode.next=newNode;
+        }
+        return head;
+    }
+    private Queue DelQ(Queue head){
+        head=head.next;
+        return head;
+    }
+}
 class MyPanel_insert extends JPanel{
     JPanel panel_insert,panel_death;
     InsertButton insertButton;
@@ -238,6 +342,7 @@ class MyPanel_init extends JPanel{
     JPanel panel_init;
     InitButton initButton;
     MyFrame frame=null;
+    MyPanel_graph myPanel_graph;
     public MyPanel_init(MyFrame frame){
         this.frame=frame;
         this.panel_init=new JPanel();
@@ -248,6 +353,9 @@ class MyPanel_init extends JPanel{
         this.panel_init.add(this.initButton.b_insert);
         this.panel_init.add(this.initButton.b_search);
         this.panel_init.add(this.initButton.b_del);
+        //图面板
+        this.myPanel_graph=new MyPanel_graph(this.frame);
+        this.panel_init.add(this.myPanel_graph);
     }
 }
 class MyPanel_search extends JPanel{
@@ -559,6 +667,9 @@ class MyActionListener implements ActionListener{
             this.frame.T=ctj.insert(this.frame.T, father, name, byear, bmonth, bday, alive, address, alive, dyear, dmonth, dday);
             this.frame.container.remove(this.frame.myPanel_insert.panel_insert);
             this.frame.container.add(this.frame.myPanel_init.panel_init);
+
+            this.frame.myPanel_init.myPanel_graph.change=true;
+
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
@@ -763,7 +874,6 @@ class MyActionListener implements ActionListener{
             }
             else{
                 alive=false;
-                System.out.println(6666666);
                 dyear=Integer.parseInt(this.frame.myPanel_information.dyearJTextArea.getText());
                 dmonth=Integer.parseInt(this.frame.myPanel_information.dmonthJTextArea.getText());
                 dday=Integer.parseInt(this.frame.myPanel_information.ddayJTextArea.getText());
