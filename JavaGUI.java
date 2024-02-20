@@ -111,11 +111,12 @@ class MyPanel_graph extends JPanel{
     MyFrame frame=null;
     Queue head=null;
     int depth=1;
-    boolean change;
     //行的空间大小
     int[] space=new int[100];
     //行的对象个数
     int[] arr=new int[100];
+    //行目前已画对象个数
+    int[] num=new int[100];
     public MyPanel_graph(MyFrame frame){
         this.frame=frame;
         this.setBackground(new Color(203,203,203));
@@ -132,10 +133,11 @@ class MyPanel_graph extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawTree(g,this.frame.T);
-        //数组初始化
+        //初始化
         for(int i=0;i<99;i++){
             this.space[i]=0;
             this.arr[i]=0;
+            this.num[i]=0;
         }
     }
     public void drawTree(Graphics g,long T){
@@ -145,51 +147,65 @@ class MyPanel_graph extends JPanel{
         JavaGUI ctj=new JavaGUI();
         int x1,x2;
         long CT;
-        this.head=AddQ(head, T);
+        this.arr[1]++;
         x1=drawTRect(g, T);
-        CT=ctj.convertToTree(this.head.TN).child;
-        while(CT!=0){
-            this.head=AddQ(head, CT);
-            x2=drawTRect(g, CT);
-            //20 20
-            g.drawLine(x1+20, 30+(this.depth-2)*100, x2+20,10+(this.depth-1)*100);
-            CT=ctj.convertToTree(CT).subbro;
+        this.head=AddQ(head, T,x1);
+        //遍历计算一层中结点个数
+        Count(T);
+        
+        while (this.head!=null) {
+            CT=ctj.convertToTree(this.head.TN).child;
+            x1=this.head.x;
+            //画图
+            while(CT!=0){
+                x2=drawTRect(g, CT);
+                this.head=AddQ(head, CT,x2);
+                this.num[this.depth]++;
+                //20 20
+                g.drawLine(x1+20, 30+(this.depth-2)*100, x2+20,10+(this.depth-1)*100);
+                CT=ctj.convertToTree(CT).subbro;
+            }
+            this.head=DelQ(this.head);
         }
-        this.change=false;
+        
     }
     public int drawTRect(Graphics g,long T){
         JavaGUI ctj=new JavaGUI();
         JavaGUI.TNode TN=ctj.convertToTree(T);
         this.depth=TN.depth;
-        if(this.change){
-            this.arr[TN.depth]++;
             
-        }
-        System.out.println(TN.name);
-        System.out.println(this.arr[TN.depth]);
+
         this.space[TN.depth]=this.getWidth()/this.arr[TN.depth];
 
-
         g.setColor(Color.black);
-        g.drawRect((this.arr[TN.depth])*(this.space[TN.depth]/2)-20,10+(TN.depth-1)*100,40,20);
-        g.drawString(TN.name, (this.arr[TN.depth])*(this.space[TN.depth]/2)-17, 25+(TN.depth-1)*100);
+        g.drawRect(((((this.num[TN.depth]+1)+this.num[TN.depth])*this.space[TN.depth])/2)-20,10+(TN.depth-1)*100,40,20);
+        g.drawString(TN.name, ((((this.num[TN.depth]+1)+this.num[TN.depth])*this.space[TN.depth])/2)-17, 25+(TN.depth-1)*100);
         //返回x坐标
-        return (this.arr[TN.depth])*(this.space[TN.depth]/2)-20;
+        return ((((this.num[TN.depth]+1)+this.num[TN.depth])*this.space[TN.depth])/2)-20;
         //3 25
     }
-
+    private void Count(long T){
+        if(T==0)
+            return;
+        JavaGUI ctj=new JavaGUI();
+        this.arr[ctj.convertToTree(T).depth]++;
+        Count(ctj.convertToTree(T).child);
+        Count(ctj.convertToTree(T).subbro);
+    }
     //下面是队列方法以及类
     private class Queue{
         long TN;
+        int x;
         Queue next;
-        public Queue(long TN){
+        public Queue(long TN,int x){
             this.TN=TN;
+            this.x=x;
             this.next=null;
         }
     }
-    private Queue AddQ(Queue head,long TN){
+    private Queue AddQ(Queue head,long TN,int x){
         Queue pNode;
-        Queue newNode=new Queue(TN);
+        Queue newNode=new Queue(TN,x);
         if(head==null){
             head=newNode;
         }
@@ -668,7 +684,6 @@ class MyActionListener implements ActionListener{
             this.frame.container.remove(this.frame.myPanel_insert.panel_insert);
             this.frame.container.add(this.frame.myPanel_init.panel_init);
 
-            this.frame.myPanel_init.myPanel_graph.change=true;
 
             this.frame.container.revalidate();
             this.frame.container.repaint();
