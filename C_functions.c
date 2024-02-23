@@ -3,6 +3,7 @@
 #include<stdbool.h>
 #include<string.h>
 #include<stdint.h>
+#include<time.h>
 //下面的头文件为JNI虚拟机，调试时可以注释掉
 //#include<jni.h>
 //#include"JavaGUI.h"
@@ -339,29 +340,48 @@ void Swap(Tree* T1, Tree* T2) {
     *T2 = T3;
 }
 
-////按出生日期对所有成员排序
-//// (返回值字符串)
-//char* SortByBirth(Tree T){
-//    int i,j;
-//    int num=Count(T);
-//    char *str=(char*)malloc(4*num*sizeof(char));
-//    Tree *Sortarry=(Tree*)malloc(num*sizeof(Tree));
-//    Sortarry=AddInArry(T,Sortarry,0,num);
-//    //简单选择排序
-//    for (i = 0; i < num; i++) {
-//        for (j = i; j < num; j++) {
-//            if (Sortarry[i]->age_ratio > Sortarry[j]->age_ratio)
-//                Swap(&Sortarry[i], &Sortarry[j]);
-//        }
-//    }
-//    //对字符串进行处理
-//    strcpy(str, Sortarry[0]->name);
-//    for (i = 1; i < num; i++) {
-//        strcat(str, " ");
-//        strcat(str, Sortarry[i]->name);
-//    }
-//    return str;
-//}
+//按出生日期对所有成员排序
+// (返回值字符串)
+char* SortByBirth(Tree T) {
+    int i, j;
+    int num = Count(T);
+    char* str = (char*)malloc(4 * num * sizeof(char));
+    Tree* Sortarry = (Tree*)malloc(num * sizeof(Tree));
+    AddInArry(T, Sortarry, 0, num);
+    //简单选择排序
+    for (i = 0; i < num; i++) {
+        for (j = i; j < num; j++) {
+            if (Sortarry[i]->age_ratio > Sortarry[j]->age_ratio)
+                Swap(&Sortarry[i], &Sortarry[j]);
+        }
+    }
+    //对字符串进行处理
+    strcpy(str, Sortarry[0]->name);
+    for (i = 1; i < num; i++) {
+        strcat(str, " ");
+        strcat(str, Sortarry[i]->name);
+    }
+    return str;
+}
+
+// 创建当前日期
+//返回Date结构体
+Date createCurrentDate() {
+    time_t t;
+    struct tm* now;
+
+    // 获取当前时间
+    time(&t);
+    now = localtime(&t);
+
+    // 构建日期结构体
+    Date currentDate = (Date)malloc(sizeof(struct Time));
+    currentDate->year = now->tm_year + 1900;
+    currentDate->month = now->tm_mon + 1;
+    currentDate->day = now->tm_mday;
+
+    return currentDate;
+}
 
 //修改当前日期
 Date ModifyDate(Date date, int year, int month, int day) {
@@ -478,7 +498,8 @@ char* RemindBirth(Tree T, Date date) {
 }
 
 int main() {
-    Date Today = CreateTime(2024, 1, 1);
+    Date currentDate = createCurrentDate();
+    printf("%d年%d月%d日\n", currentDate->year, currentDate->month, currentDate->day);
     Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
     Insert(T, "祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false, 2011, 1, 2);
     Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
@@ -487,7 +508,7 @@ int main() {
     Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
     Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
     Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true, 0, 0, 0);
-    printf("%s\n", RemindBirth(T, Today));
+    printf("%s\n", RemindBirth(T, currentDate));
     printf("%s\n", Relation(T, "祖先", "狗蛋"));
 }
 
