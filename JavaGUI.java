@@ -62,6 +62,7 @@ public class JavaGUI {
     public native long modifyDate(long date,int year,int month,int day);
     public native String remindBirth(long T,long date);
     public native Date convertToDate(long date);
+    public native String relation(long T,String name1,String name2);
 
     //主函数
     public static void main(String[] args) {
