@@ -497,21 +497,20 @@ char* RemindBirth(Tree T, Date date) {
     return reminder;
 }
 
-int main() {
-    Date Today = (Date)malloc(sizeof(struct Time));
-    Today = CreateTime(2024, 1, 8);
-    printf("%d年%d月%d日\n", Today->year, Today->month, Today->day);
-    Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
-    Insert(T, "祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false, 2011, 1, 2);
-    Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
-    Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
-    Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
-    Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
-    Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
-    Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true, 0, 0, 0);
-    printf("%s", RemindBirth(T, Today));
-    printf("%s", Relation(T, "祖先", "狗蛋"));
-}
+// int main() {
+//     Date currentDate = createCurrentDate();
+//     printf("%d年%d月%d日\n", currentDate->year, currentDate->month, currentDate->day);
+//     Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
+//     Insert(T, "祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false, 2011, 1, 2);
+//     Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
+//     Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
+//     Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
+//     Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
+//     Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
+//     Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true, 0, 0, 0);
+//     printf("%s\n", RemindBirth(T, currentDate));
+//     printf("%s\n", Relation(T, "祖先", "狗蛋"));
+// }
 
 
 
