@@ -3,7 +3,7 @@
 #include<stdbool.h>
 #include<string.h>
 #include<stdint.h>
-#include<time.h>
+
 //下面的头文件为JNI虚拟机，调试时可以注释掉
 //#include<jni.h>
 //#include"JavaGUI.h"
@@ -364,25 +364,6 @@ char* SortByBirth(Tree T) {
     return str;
 }
 
-// 创建当前日期
-//返回Date结构体
-Date createCurrentDate() {
-    time_t t;
-    struct tm* now;
-
-    // 获取当前时间
-    time(&t);
-    now = localtime(&t);
-
-    // 构建日期结构体
-    Date currentDate = (Date)malloc(sizeof(struct Time));
-    currentDate->year = now->tm_year + 1900;
-    currentDate->month = now->tm_mon + 1;
-    currentDate->day = now->tm_mday;
-
-    return currentDate;
-}
-
 //修改当前日期
 Date ModifyDate(Date date, int year, int month, int day) {
     date->year = year;
@@ -397,7 +378,7 @@ Tree CheckBirth(Tree T, Date date) {
     Tree T1;
     if (!T)
         return NULL;
-    if (T->birth->day == date->day && T->birth->month == date->month)
+    if (T->birth->day == date->day && T->birth->month == date->month && T->alive == true)
         return T;
     else {
         T1 = CheckBirth(T->child, date);
@@ -498,8 +479,9 @@ char* RemindBirth(Tree T, Date date) {
 }
 
 int main() {
-    Date currentDate = createCurrentDate();
-    printf("%d年%d月%d日\n", currentDate->year, currentDate->month, currentDate->day);
+    Date Today = (Date)malloc(sizeof(struct Time));
+    Today = CreateTime(2024, 1, 8);
+    printf("%d年%d月%d日\n", Today->year, Today->month, Today->day);
     Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
     Insert(T, "祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false, 2011, 1, 2);
     Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
@@ -508,8 +490,8 @@ int main() {
     Insert(T, "小明2", "阿聪1", 1990, 1, 6, true, "翻斗花园", false, 2019, 1, 6);
     Insert(T, "小明2", "阿聪2", 1991, 1, 7, true, "翻斗花园", false, 2019, 1, 7);
     Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true, 0, 0, 0);
-    printf("%s\n", RemindBirth(T, currentDate));
-    printf("%s\n", Relation(T, "祖先", "狗蛋"));
+    printf("%s", RemindBirth(T, Today));
+    printf("%s", Relation(T, "祖先", "狗蛋"));
 }
 
 
