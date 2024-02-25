@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<stdbool.h>
 #include<string.h>
-#include<stdint.h>
+#include<stdint.h> 
 
 //下面的头文件为JNI虚拟机，调试时可以注释掉
 //#include<jni.h>
