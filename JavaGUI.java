@@ -84,6 +84,8 @@ class MyFrame extends JFrame{
     MyPanel_information myPanel_information;
     MyPanel_delete myPanel_delete;
     MyPanel_relation myPanel_relation;
+    MyPanel_creatTime myPanel_creatTime;
+    MyPanel_modifyTime myPanel_modifyTime;
     public  MyFrame(long T){
         super("族谱管理系统");
         setVisible(true);
@@ -109,6 +111,10 @@ class MyFrame extends JFrame{
         this.myPanel_delete=new MyPanel_delete(this);
         //关系面板
         this.myPanel_relation=new MyPanel_relation(this);
+        //创建日期面板
+        this.myPanel_creatTime=new MyPanel_creatTime(this);
+        //修改日期面板
+        this.myPanel_modifyTime=new MyPanel_modifyTime(this);
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
@@ -367,6 +373,7 @@ class MyPanel_init extends JPanel{
     InitButton initButton;
     MyFrame frame=null;
     MyPanel_graph myPanel_graph;
+    JLabel time;
     public MyPanel_init(MyFrame frame){
         this.frame=frame;
         this.panel_init=new JPanel();
@@ -378,9 +385,14 @@ class MyPanel_init extends JPanel{
         this.panel_init.add(this.initButton.b_search);
         this.panel_init.add(this.initButton.b_del);
         this.panel_init.add(this.initButton.b_relation);
+        this.panel_init.add(this.initButton.b_creatTime);
+        this.time=new JLabel("");
+        this.time.setBounds(1375,725,100,100);
+        this.time.setFont(new Font("宋体",Font.BOLD,20));
         //图面板
         this.myPanel_graph=new MyPanel_graph(this.frame);
         this.panel_init.add(this.myPanel_graph);
+        this.panel_init.add(this.time);
     }
 }
 class MyPanel_search extends JPanel{
@@ -568,9 +580,62 @@ class MyPanel_delete extends JPanel{
         
     }
 }
+class MyPanel_creatTime extends JPanel{
+    JPanel panel_createTime;
+    MyFrame frame=null;
+    CreateTimeButton createTimeButton;
+    JTextArea yearJTextArea,monthJTextArea,dayJTextArea;
+    public MyPanel_creatTime(MyFrame frame){
+        this.frame=frame;
+        this.panel_createTime=new JPanel();
+        this.panel_createTime.setBounds(this.frame.getBounds());
+        this.panel_createTime.setLayout(null);
+        this.panel_createTime.setBackground(Color.magenta);
+
+        this.yearJTextArea=new JTextArea(1,5);
+        this.yearJTextArea.setBounds(450,285,100,30);
+        this.yearJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        JLabel yearJLabel=new JLabel("年");
+        yearJLabel.setBounds(575,253,100,100);
+        yearJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.monthJTextArea=new JTextArea(1,5);
+        this.monthJTextArea.setBounds(650,285,100,30);
+        this.monthJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        JLabel monthJLabel=new JLabel("月");
+        monthJLabel.setBounds(775,253,100,100);
+        monthJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.dayJTextArea=new JTextArea(1,5);
+        this.dayJTextArea.setBounds(850,285,100,30);
+        this.dayJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        JLabel dayJLabel=new JLabel("日");
+        dayJLabel.setBounds(975,253,100,100);
+        dayJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.panel_createTime.add(this.yearJTextArea);
+        this.panel_createTime.add(yearJLabel);
+        this.panel_createTime.add(this.monthJTextArea);
+        this.panel_createTime.add(monthJLabel);
+        this.panel_createTime.add(this.dayJTextArea);
+        this.panel_createTime.add(dayJLabel);
+        //按钮
+        this.createTimeButton=new CreateTimeButton(this.frame);
+        this.panel_createTime.add(this.createTimeButton.b_create);
+        this.panel_createTime.add(this.createTimeButton.b_return);
+    }
+}
+class MyPanel_modifyTime extends MyPanel_creatTime{
+    ModifyTimeButton modifyTimeButton;
+    public MyPanel_modifyTime(MyFrame frame){
+        super(frame);
+        this.modifyTimeButton=new ModifyTimeButton(this.frame);
+        this.panel_createTime.remove(this.createTimeButton.b_create);
+        this.panel_createTime.add(this.modifyTimeButton.b_modify);
+
+
+    }
+}
 //按钮类
 class InitButton extends JButton{
-    JButton b_insert,b_search,b_del,b_relation;
+    JButton b_insert,b_search,b_del,b_relation,b_creatTime,b_modifyTime;
     MyFrame frame=null;
     public InitButton(MyFrame frame){
         this.frame=frame;
@@ -586,12 +651,20 @@ class InitButton extends JButton{
         this.b_relation=new JButton("关系溯源");
         this.b_relation.setBounds(1350,350,150,50);
         this.b_relation.setFont(new Font("宋体",Font.BOLD,25));
+        this.b_creatTime=new JButton("创建日期");
+        this.b_creatTime.setBounds(1350,450,150,50);
+        this.b_creatTime.setFont(new Font("宋体",Font.BOLD,25));
+        this.b_modifyTime=new JButton("修改日期");
+        this.b_modifyTime.setBounds(1350,450,150,50);
+        this.b_modifyTime.setFont(new Font("宋体",Font.BOLD,25));
         //绑定事件
         MyActionListener myActionListener=new MyActionListener(this.frame);
         this.b_insert.addActionListener(myActionListener);
         this.b_search.addActionListener(myActionListener);
         this.b_del.addActionListener(myActionListener);
         this.b_relation.addActionListener(myActionListener);
+        this.b_creatTime.addActionListener(myActionListener);
+        this.b_modifyTime.addActionListener(myActionListener);
 }
 }
 class InsertButton extends JButton{
@@ -758,6 +831,40 @@ class RelationButton extends JButton{
         this.b_search.addActionListener(myActionListener);
     }
 }
+class CreateTimeButton extends JButton{
+    JButton b_create,b_return;
+    MyFrame frame=null;
+    public CreateTimeButton(MyFrame frame){
+        this.frame=frame;
+        this.b_create=new JButton("创建");
+        this.b_create.setBounds(1200,700,100,50);
+        this.b_create.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_create.setForeground(Color.red);
+        this.b_return=new JButton("返回");
+        this.b_return.setBounds(1350,700,100,50);
+        this.b_return.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_return.setForeground(Color.gray);
+        this.b_return.setActionCommand("创建中的返回");
+        //绑定事件
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_create.addActionListener(myActionListener);
+        this.b_return.addActionListener(myActionListener);
+    }
+}
+class ModifyTimeButton extends CreateTimeButton{
+    JButton b_modify;
+    public ModifyTimeButton(MyFrame frame){
+        super(frame);
+        this.b_modify=new JButton("修改");
+        this.b_modify.setBounds(1200,700,100,50);
+        this.b_modify.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_modify.setForeground(Color.red);
+        this.b_modify.setActionCommand("确认修改时间");
+        //绑定按键
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_modify.addActionListener(myActionListener);
+    }
+}
 //事件类
 class MyActionListener implements ActionListener{
     MyFrame frame=null;
@@ -783,6 +890,18 @@ class MyActionListener implements ActionListener{
         else if(e.getActionCommand()=="关系溯源"){
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_relation.panel_relation);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="创建日期"){
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_creatTime.panel_createTime);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="修改日期"){
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_modifyTime.panel_createTime);
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
@@ -1060,6 +1179,50 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="查询返回"){
             this.frame.myPanel_relation.relationJLabel.setText("");
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="创建"){
+            String time="";
+            String year=this.frame.myPanel_creatTime.yearJTextArea.getText();
+            String month=this.frame.myPanel_creatTime.monthJTextArea.getText();
+            String day=this.frame.myPanel_creatTime.dayJTextArea.getText();
+            time=year+"/"+month+"/"+day;
+            this.frame.myPanel_init.time.setText(time);
+            this.frame.myPanel_creatTime.yearJTextArea.setText("");
+            this.frame.myPanel_creatTime.monthJTextArea.setText("");
+            this.frame.myPanel_creatTime.dayJTextArea.setText("");
+            this.frame.myPanel_init.panel_init.remove(this.frame.myPanel_init.initButton.b_creatTime);
+            this.frame.myPanel_init.panel_init.add(this.frame.myPanel_init.initButton.b_modifyTime);
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="创建中的返回"){
+            this.frame.myPanel_creatTime.yearJTextArea.setText("");
+            this.frame.myPanel_creatTime.monthJTextArea.setText("");
+            this.frame.myPanel_creatTime.dayJTextArea.setText("");
+            this.frame.myPanel_modifyTime.yearJTextArea.setText("");
+            this.frame.myPanel_modifyTime.monthJTextArea.setText("");
+            this.frame.myPanel_modifyTime.dayJTextArea.setText("");
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="确认修改时间"){
+            String time="";
+            String year=this.frame.myPanel_modifyTime.yearJTextArea.getText();
+            String month=this.frame.myPanel_modifyTime.monthJTextArea.getText();
+            String day=this.frame.myPanel_modifyTime.dayJTextArea.getText();
+            time=year+"/"+month+"/"+day;
+            this.frame.myPanel_init.time.setText(time);
+            this.frame.myPanel_modifyTime.yearJTextArea.setText("");
+            this.frame.myPanel_modifyTime.monthJTextArea.setText("");
+            this.frame.myPanel_modifyTime.dayJTextArea.setText("");
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_init.panel_init);
             this.frame.container.revalidate();
