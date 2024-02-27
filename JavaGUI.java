@@ -63,6 +63,9 @@ public class JavaGUI {
     public native String remindBirth(long T,long date);
     public native Date convertToDate(long date);
     public native String relation(long T,String name1,String name2);
+    public native long delete(long T,String name);
+    public native long createTime(int year,int month,int day);
+    public native void freeTree(long T);
 
     //主函数
     public static void main(String[] args) {

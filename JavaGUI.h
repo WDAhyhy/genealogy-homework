@@ -79,6 +79,38 @@ JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth
 JNIEXPORT jobject JNICALL Java_JavaGUI_convertToDate
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     JavaGUI
+ * Method:    relation
+ * Signature: (JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_JavaGUI_relation
+  (JNIEnv *, jobject, jlong, jstring, jstring);
+
+/*
+ * Class:     JavaGUI
+ * Method:    delete
+ * Signature: (JLjava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_JavaGUI_delete
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     JavaGUI
+ * Method:    createTime
+ * Signature: (III)J
+ */
+JNIEXPORT jlong JNICALL Java_JavaGUI_createTime
+  (JNIEnv *, jobject, jint, jint, jint);
+
+/*
+ * Class:     JavaGUI
+ * Method:    freeTree
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_JavaGUI_freeTree
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

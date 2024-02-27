@@ -410,7 +410,7 @@ void FreeTree(Tree T) {
 
 //删除函数
 //(头节点，删除名字)  返回->头结点
-Tree Delete(Tree T, char* name) {
+Tree Delete(Tree T,const char* name) {
     Tree DeT = SearchByName(T, name);
     if (!DeT) {
         printf("家谱中没有该成员\n");
@@ -619,9 +619,7 @@ JNIEXPORT jlong JNICALL Java_JavaGUI_createTime(JNIEnv *env,jobject obj,jint yea
 JNIEXPORT void JNICALL Java_JavaGUI_freeTree(JNIEnv *env,jobject obj,jlong T){
     return FreeTree((Tree)T);
 }
-JNIEXPORT jstring JNICALL Java_JavaGUI_sortByBirth(JNIEnv *env,jobject obj,jlong T){
-    return (*env)->NewStringUTF(env,SortByBirth((Tree)T));
-}
+
 // JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth(JNIEnv *env,jobject obj,jlong T,jlong date){
 //    return (*env)->NewStringUTF(env,RemindBirth((Tree)T,(Date)date));
 // }
