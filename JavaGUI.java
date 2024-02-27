@@ -82,7 +82,8 @@ class MyFrame extends JFrame{
     MyPanel_searchByName myPanel_searchByName;
     MyPanel_searchByBirth myPanel_searchByBirth;
     MyPanel_information myPanel_information;
-    MyPanel_graph myPanel_graph;
+    MyPanel_delete myPanel_delete;
+    MyPanel_relation myPanel_relation;
     public  MyFrame(long T){
         super("族谱管理系统");
         setVisible(true);
@@ -104,7 +105,10 @@ class MyFrame extends JFrame{
         this.myPanel_searchByBirth=new MyPanel_searchByBirth(this);
         //信息面板
         this.myPanel_information=new MyPanel_information(this,this.TN);
-        //图面板
+        //删除面板
+        this.myPanel_delete=new MyPanel_delete(this);
+        //关系面板
+        this.myPanel_relation=new MyPanel_relation(this);
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
@@ -373,6 +377,7 @@ class MyPanel_init extends JPanel{
         this.panel_init.add(this.initButton.b_insert);
         this.panel_init.add(this.initButton.b_search);
         this.panel_init.add(this.initButton.b_del);
+        this.panel_init.add(this.initButton.b_relation);
         //图面板
         this.myPanel_graph=new MyPanel_graph(this.frame);
         this.panel_init.add(this.myPanel_graph);
@@ -421,6 +426,45 @@ class MyPanel_searchByName extends JPanel{
         this.panel_searchByName.add(this.searchByNameButton.b_search);
         this.panel_searchByName.add(this.searchByNameButton.b_return);
 
+    }
+}
+class MyPanel_relation extends JPanel{
+    JLabel relationJLabel;
+    MyFrame frame=null;
+    JTextArea name_1JTextArea ,name_2JTextArea;
+    JPanel panel_relation;
+    RelationButton relationButton;
+    public MyPanel_relation(MyFrame frame){
+        this.frame=frame;
+        this.relationJLabel=new JLabel("");
+        this.relationJLabel.setBounds(200,350,800,100);
+        this.relationJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        JLabel name_1_JLabel=new JLabel("名字一：");
+        name_1_JLabel.setBounds(200,250,130,100);
+        name_1_JLabel.setFont(new Font("宋体",Font.BOLD,25));
+        this.name_1JTextArea=new JTextArea(1,5);
+        this.name_1JTextArea.setBounds(300,285,100,30);
+        this.name_1JTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        JLabel name_2_JLabel=new JLabel("名字二：");
+        name_2_JLabel.setBounds(700,250,130,100);
+        name_2_JLabel.setFont(new Font("宋体",Font.BOLD,25));
+        this.name_2JTextArea=new JTextArea(1,5);
+        this.name_2JTextArea.setBounds(800,285,100,30);
+        this.name_2JTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+
+        this.panel_relation=new JPanel();
+        this.panel_relation.setBounds(this.frame.getBounds());
+        this.panel_relation.setBackground(Color.yellow);
+        this.panel_relation.setLayout(null);
+        this.panel_relation.add(this.relationJLabel);
+        this.panel_relation.add(name_1_JLabel);
+        this.panel_relation.add(name_2_JLabel);
+        this.panel_relation.add(this.name_1JTextArea);
+        this.panel_relation.add(this.name_2JTextArea);
+        //按钮
+        this.relationButton=new RelationButton(this.frame);
+        this.panel_relation.add(this.relationButton.b_return);
+        this.panel_relation.add(this.relationButton.b_search);
     }
 }
 class MyPanel_searchByBirth extends JPanel{
@@ -498,9 +542,35 @@ class MyPanel_information extends MyPanel_insert{
     }
 
 }
+class MyPanel_delete extends JPanel{
+    DeleteButton deleteButton;
+    JTextArea nameJTextArea;
+    JPanel panel_delte;
+    MyFrame frame=null;
+    public MyPanel_delete(MyFrame frame){
+        this.frame=frame;
+        JLabel nameJLabel=new JLabel("名字：");
+        nameJLabel.setBounds(500,250,100,100);
+        nameJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.nameJTextArea=new JTextArea(1,5);
+        this.nameJTextArea.setBounds(600,285,100,30);
+        this.nameJTextArea.setFont(new Font("宋体",Font.PLAIN,25));
+        this.panel_delte=new JPanel();
+        this.panel_delte.setBounds(this.frame.getBounds());
+        this.panel_delte.setLayout(null);
+        this.panel_delte.setBackground(Color.green);
+        this.panel_delte.add(nameJLabel);
+        this.panel_delte.add(this.nameJTextArea);
+        //按钮
+        this.deleteButton=new DeleteButton(this.frame);
+        this.panel_delte.add(this.deleteButton.b_cancel);
+        this.panel_delte.add(this.deleteButton.b_del);
+        
+    }
+}
 //按钮类
 class InitButton extends JButton{
-    JButton b_insert,b_search,b_del;
+    JButton b_insert,b_search,b_del,b_relation;
     MyFrame frame=null;
     public InitButton(MyFrame frame){
         this.frame=frame;
@@ -513,11 +583,15 @@ class InitButton extends JButton{
         this.b_del=new JButton("删除");
         this.b_del.setBounds(1350,250,150,50);
         this.b_del.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_relation=new JButton("关系溯源");
+        this.b_relation.setBounds(1350,350,150,50);
+        this.b_relation.setFont(new Font("宋体",Font.BOLD,25));
         //绑定事件
         MyActionListener myActionListener=new MyActionListener(this.frame);
         this.b_insert.addActionListener(myActionListener);
         this.b_search.addActionListener(myActionListener);
         this.b_del.addActionListener(myActionListener);
+        this.b_relation.addActionListener(myActionListener);
 }
 }
 class InsertButton extends JButton{
@@ -643,6 +717,47 @@ class InformationButton extends InsertButton{
         this.aliveNoJRadioButton.addActionListener(myActionListener);
     }
 }
+class DeleteButton extends JButton{
+    JButton b_cancel,b_del;
+    MyFrame frame=null;
+    public DeleteButton(MyFrame frame){
+        this.frame=frame;
+        this.b_del=new JButton("删除");
+        this.b_del.setBounds(1200,700,100,50);
+        this.b_del.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_del.setForeground(Color.red);
+        this.b_del.setActionCommand("删除中的删除");
+        this.b_cancel=new JButton("取消");
+        this.b_cancel.setBounds(1350,700,100,50);
+        this.b_cancel.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_cancel.setForeground(Color.gray);
+        //绑定事件
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_del.addActionListener(myActionListener);
+        this.b_cancel.addActionListener(myActionListener);
+    }
+
+}
+class RelationButton extends JButton{
+    JButton b_search,b_return;
+    MyFrame frame=null;
+    public RelationButton(MyFrame frame){
+        this.frame=frame;
+        this.b_search=new JButton("查询");
+        this.b_search.setBounds(1200,700,100,50);
+        this.b_search.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_search.setForeground(Color.red);
+        this.b_return=new JButton("返回");
+        this.b_return.setActionCommand("查询返回");
+        this.b_return.setBounds(1350,700,100,50);
+        this.b_return.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_return.setForeground(Color.gray);
+        //绑定事件
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_return.addActionListener(myActionListener);
+        this.b_search.addActionListener(myActionListener);
+    }
+}
 //事件类
 class MyActionListener implements ActionListener{
     MyFrame frame=null;
@@ -660,7 +775,16 @@ class MyActionListener implements ActionListener{
             this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="删除"){
-            System.out.println("789");
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_delete.panel_delte);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="关系溯源"){
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_relation.panel_relation);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="提交"){
             boolean alive;
@@ -777,7 +901,6 @@ class MyActionListener implements ActionListener{
             this.frame.myPanel_information.bdayJTextArea.setText(Integer.toString(T1.birth.day));
             
             if(T1.death.year==-1){
-                System.out.println(55555);
                 this.frame.myPanel_information.dyearJTextArea.setText("");
                 this.frame.myPanel_information.dmonthJTextArea.setText("");
                 this.frame.myPanel_information.ddayJTextArea.setText("");
@@ -908,6 +1031,37 @@ class MyActionListener implements ActionListener{
         else if(e.getActionCommand()=="返回上一级"){
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_search.panel_search);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="删除中的删除"){
+            String name=this.frame.myPanel_delete.nameJTextArea.getText();
+            JavaGUI ctj=new JavaGUI();
+            this.frame.T=ctj.delete(this.frame.T, name);
+            this.frame.myPanel_delete.nameJTextArea.setText("");
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+
+        }
+        else if(e.getActionCommand()=="取消"){
+            this.frame.myPanel_delete.nameJTextArea.setText("");
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="查询"){
+            JavaGUI ctj=new JavaGUI();
+            String name_1=this.frame.myPanel_relation.name_1JTextArea.getText();
+            String name_2=this.frame.myPanel_relation.name_2JTextArea.getText();
+            this.frame.myPanel_relation.relationJLabel.setText(ctj.relation(this.frame.T, name_1, name_2));
+        }
+        else if(e.getActionCommand()=="查询返回"){
+            this.frame.myPanel_relation.relationJLabel.setText("");
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_init.panel_init);
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
