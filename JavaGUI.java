@@ -74,7 +74,7 @@ public class JavaGUI {
     }
 }
 class MyFrame extends JFrame{
-    long T=0,TN=0;
+    long T=0,TN=0,Date=0;
     Container container;
     MyPanel_insert myPanel_insert;
     MyPanel_init myPanel_init;
@@ -1185,11 +1185,12 @@ class MyActionListener implements ActionListener{
             this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="创建"){
-            String time="";
-            String year=this.frame.myPanel_creatTime.yearJTextArea.getText();
-            String month=this.frame.myPanel_creatTime.monthJTextArea.getText();
-            String day=this.frame.myPanel_creatTime.dayJTextArea.getText();
-            time=year+"/"+month+"/"+day;
+            JavaGUI ctj=new JavaGUI();
+            int year=Integer.parseInt(this.frame.myPanel_creatTime.yearJTextArea.getText());
+            int month=Integer.parseInt(this.frame.myPanel_creatTime.monthJTextArea.getText());
+            int day=Integer.parseInt(this.frame.myPanel_creatTime.dayJTextArea.getText());
+            this.frame.Date=ctj.createTime(year, month, day);
+            String time=year+"/"+month+"/"+day;
             this.frame.myPanel_init.time.setText(time);
             this.frame.myPanel_creatTime.yearJTextArea.setText("");
             this.frame.myPanel_creatTime.monthJTextArea.setText("");
@@ -1214,11 +1215,12 @@ class MyActionListener implements ActionListener{
             this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="确认修改时间"){
-            String time="";
-            String year=this.frame.myPanel_modifyTime.yearJTextArea.getText();
-            String month=this.frame.myPanel_modifyTime.monthJTextArea.getText();
-            String day=this.frame.myPanel_modifyTime.dayJTextArea.getText();
-            time=year+"/"+month+"/"+day;
+            JavaGUI ctj=new JavaGUI();
+            int year=Integer.parseInt(this.frame.myPanel_modifyTime.yearJTextArea.getText());
+            int month=Integer.parseInt(this.frame.myPanel_modifyTime.monthJTextArea.getText());
+            int day=Integer.parseInt(this.frame.myPanel_modifyTime.dayJTextArea.getText());
+            this.frame.Date=ctj.modifyDate(this.frame.Date, year, month, day);
+            String time=year+"/"+month+"/"+day;
             this.frame.myPanel_init.time.setText(time);
             this.frame.myPanel_modifyTime.yearJTextArea.setText("");
             this.frame.myPanel_modifyTime.monthJTextArea.setText("");
