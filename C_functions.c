@@ -398,7 +398,6 @@ void FreeTree(Tree T) {
     }
 
     FreeTree(T->child);
-    FreeTree(T->subbro);
 
     free(T->name);
     free(T->birth);
@@ -411,9 +410,9 @@ void FreeTree(Tree T) {
 //删除函数
 //(头节点，删除名字)  返回->头结点
 Tree Delete(Tree T,const char* name) {
+    
     Tree DeT = SearchByName(T, name);
     if (!DeT) {
-        printf("家谱中没有该成员\n");
         return T;
     }
     if (!DeT->parent) {
@@ -423,34 +422,18 @@ Tree Delete(Tree T,const char* name) {
     else {
         Tree fathT = DeT->parent;
         if (fathT->child == DeT) {
+ 
             fathT->child = DeT->subbro;
+
         }
         else {
             Tree broT = fathT->child;
-            Tree prevBro = NULL;
 
-            while (broT && broT != DeT) {
-                prevBro = broT;
+            while (broT->subbro!=DeT) {
                 broT = broT->subbro;
             }
-
-            if (broT) {
-                // 找到了要删除的节点
-                if (prevBro) {
-                    // 不是第一个子节点
-                    prevBro->subbro = DeT->subbro;
-                }
-                else {
-                    // 是第一个子节点
-                    fathT->child = DeT->subbro;
-                }
-            }
-            else {
-                // 节点不在兄弟链表中，可能出现逻辑错误
-                return NULL;
-            }
+            broT->subbro=DeT->subbro;
         }
-
         // 释放删除节点及其子节点的内存
         FreeTree(DeT);
         return T;
