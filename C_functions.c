@@ -603,6 +603,6 @@ JNIEXPORT void JNICALL Java_JavaGUI_freeTree(JNIEnv *env,jobject obj,jlong T){
     return FreeTree((Tree)T);
 }
 
-// JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth(JNIEnv *env,jobject obj,jlong T,jlong date){
-//    return (*env)->NewStringUTF(env,RemindBirth((Tree)T,(Date)date));
-// }
+JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth(JNIEnv *env,jobject obj,jlong T,jlong date){
+   return (*env)->NewStringUTF(env,RemindBirth((Tree)T,(Date)date));
+}
