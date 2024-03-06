@@ -86,6 +86,8 @@ class MyFrame extends JFrame{
     MyPanel_relation myPanel_relation;
     MyPanel_creatTime myPanel_creatTime;
     MyPanel_modifyTime myPanel_modifyTime;
+    MyPanel_sortByBirth myPanel_sortByBirth;
+    MyPanel_remindBirth myPanel_remindBirth;
     public  MyFrame(long T){
         super("族谱管理系统");
         setVisible(true);
@@ -115,6 +117,10 @@ class MyFrame extends JFrame{
         this.myPanel_creatTime=new MyPanel_creatTime(this);
         //修改日期面板
         this.myPanel_modifyTime=new MyPanel_modifyTime(this);
+        //排序面板
+        this.myPanel_sortByBirth=new MyPanel_sortByBirth(this);
+        //提醒生日面板
+        this.myPanel_remindBirth=new MyPanel_remindBirth(this);
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
@@ -386,6 +392,8 @@ class MyPanel_init extends JPanel{
         this.panel_init.add(this.initButton.b_del);
         this.panel_init.add(this.initButton.b_relation);
         this.panel_init.add(this.initButton.b_creatTime);
+        this.panel_init.add(this.initButton.b_sortByBirth);
+        this.panel_init.add(this.initButton.b_remind);
         this.time=new JLabel("");
         this.time.setBounds(1375,725,100,100);
         this.time.setFont(new Font("宋体",Font.BOLD,20));
@@ -633,9 +641,52 @@ class MyPanel_modifyTime extends MyPanel_creatTime{
 
     }
 }
+class MyPanel_sortByBirth extends JPanel{
+    JPanel panel_sortByBirth;
+    MyFrame frame=null;
+    JLabel sortByBirthJLabel;
+    SortByBirthButton sortByBirthButton;
+    public MyPanel_sortByBirth(MyFrame frame){
+        this.frame=frame;
+        this.panel_sortByBirth=new JPanel();
+        this.panel_sortByBirth.setBounds(this.frame.getBounds());
+        this.panel_sortByBirth.setLayout(null);
+        this.sortByBirthJLabel=new JLabel("");
+        this.sortByBirthJLabel.setBounds(50,50,800,300);
+        this.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        JLabel aJLabel=new JLabel("按生日排序，从大到小：");
+        aJLabel.setBounds(0,0,800,100);
+        aJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        aJLabel.setForeground(Color.red);
+        this.panel_sortByBirth.add(aJLabel);
+        this.panel_sortByBirth.add(this.sortByBirthJLabel);
+        //按钮
+        sortByBirthButton=new SortByBirthButton(this.frame);
+        panel_sortByBirth.add(sortByBirthButton.b_return);
+    }
+}
+class MyPanel_remindBirth extends JPanel{
+    MyFrame frame=null;
+    SortByBirthButton remindBirthButton;
+    JLabel remindJLabel;
+    JPanel panel_remindBirth;
+    public MyPanel_remindBirth(MyFrame frame){
+        this.frame=frame;
+        this.panel_remindBirth=new JPanel();
+        this.panel_remindBirth.setBounds(this.frame.getBounds());
+        this.panel_remindBirth.setLayout(null);
+        this.remindJLabel=new JLabel("");
+        this.remindJLabel.setBounds(100,100,800,200);
+        this.remindJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.panel_remindBirth.add(this.remindJLabel);
+        //按钮
+        this.remindBirthButton=new SortByBirthButton(this.frame);
+        this.panel_remindBirth.add(this.remindBirthButton.b_return);
+    }
+}
 //按钮类
 class InitButton extends JButton{
-    JButton b_insert,b_search,b_del,b_relation,b_creatTime,b_modifyTime;
+    JButton b_insert,b_search,b_del,b_relation,b_creatTime,b_modifyTime,b_sortByBirth,b_remind;
     MyFrame frame=null;
     public InitButton(MyFrame frame){
         this.frame=frame;
@@ -657,6 +708,12 @@ class InitButton extends JButton{
         this.b_modifyTime=new JButton("修改日期");
         this.b_modifyTime.setBounds(1350,450,150,50);
         this.b_modifyTime.setFont(new Font("宋体",Font.BOLD,25));
+        this.b_sortByBirth=new JButton("排序");
+        this.b_sortByBirth.setBounds(1350,550,150,50);
+        this.b_sortByBirth.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_remind=new JButton("提醒生日");
+        this.b_remind.setBounds(1350,650,150,50);
+        this.b_remind.setFont(new Font("宋体",Font.BOLD,25));
         //绑定事件
         MyActionListener myActionListener=new MyActionListener(this.frame);
         this.b_insert.addActionListener(myActionListener);
@@ -665,6 +722,8 @@ class InitButton extends JButton{
         this.b_relation.addActionListener(myActionListener);
         this.b_creatTime.addActionListener(myActionListener);
         this.b_modifyTime.addActionListener(myActionListener);
+        this.b_sortByBirth.addActionListener(myActionListener);
+        this.b_remind.addActionListener(myActionListener);
 }
 }
 class InsertButton extends JButton{
@@ -865,6 +924,20 @@ class ModifyTimeButton extends CreateTimeButton{
         this.b_modify.addActionListener(myActionListener);
     }
 }
+class SortByBirthButton extends JButton{
+    JButton b_return;
+    MyFrame frame=null;
+    public SortByBirthButton(MyFrame frame){
+        this.frame=frame;
+        this.b_return=new JButton("返回");
+        this.b_return.setBounds(1350,700,100,50);
+        this.b_return.setFont(new Font("宋体",Font.BOLD,30));
+        this.b_return.setForeground(Color.gray);
+        //绑定事件
+        MyActionListener myActionListener=new MyActionListener(this.frame);
+        this.b_return.addActionListener(myActionListener);
+    }
+}
 //事件类
 class MyActionListener implements ActionListener{
     MyFrame frame=null;
@@ -902,6 +975,24 @@ class MyActionListener implements ActionListener{
         else if(e.getActionCommand()=="修改日期"){
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_modifyTime.panel_createTime);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="排序"){
+            JavaGUI ctj=new JavaGUI();
+            this.frame.myPanel_sortByBirth.sortByBirthJLabel.setText(ctj.sortByBirth(this.frame.T));
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_sortByBirth.panel_sortByBirth);
+            this.frame.container.revalidate();
+            this.frame.container.repaint();
+        }
+        else if(e.getActionCommand()=="提醒生日"){
+            JavaGUI ctj=new JavaGUI();
+            System.out.println(ctj.convertToDate(this.frame.Date).year);
+            this.frame.myPanel_remindBirth.remindJLabel.setText(ctj.remindBirth(this.frame.T, this.frame.Date));
+            
+            this.frame.container.removeAll();
+            this.frame.container.add(this.frame.myPanel_remindBirth.panel_remindBirth);
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
