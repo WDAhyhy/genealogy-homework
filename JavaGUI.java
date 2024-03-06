@@ -988,7 +988,6 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="提醒生日"){
             JavaGUI ctj=new JavaGUI();
-            System.out.println(ctj.convertToDate(this.frame.Date).year);
             this.frame.myPanel_remindBirth.remindJLabel.setText(ctj.remindBirth(this.frame.T, this.frame.Date));
             
             this.frame.container.removeAll();
