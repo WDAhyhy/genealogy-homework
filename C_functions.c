@@ -345,6 +345,9 @@ void Swap(Tree* T1, Tree* T2) {
 char* SortByBirth(Tree T) {
     int i, j;
     int num = Count(T);
+    if(num==0){
+        return "";
+    }
     char* str = (char*)malloc(4 * num * sizeof(char));
     Tree* Sortarry = (Tree*)malloc(num * sizeof(Tree));
     AddInArry(T, Sortarry, 0, num);
