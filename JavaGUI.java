@@ -88,6 +88,7 @@ class MyFrame extends JFrame{
     MyPanel_modifyTime myPanel_modifyTime;
     MyPanel_sortByBirth myPanel_sortByBirth;
     MyPanel_remindBirth myPanel_remindBirth;
+    MyPanel_error myPanel_error;
     public  MyFrame(long T){
         super("族谱管理系统");
         setVisible(true);
@@ -121,6 +122,8 @@ class MyFrame extends JFrame{
         this.myPanel_sortByBirth=new MyPanel_sortByBirth(this);
         //提醒生日面板
         this.myPanel_remindBirth=new MyPanel_remindBirth(this);
+        //错误面板
+        this.myPanel_error=new MyPanel_error(this);
         this.container.add(this.myPanel_init.panel_init);
         pack();
 
@@ -684,6 +687,25 @@ class MyPanel_remindBirth extends JPanel{
         this.panel_remindBirth.add(this.remindBirthButton.b_return);
     }
 }
+class MyPanel_error extends JPanel{
+    MyFrame frame=null;
+    JPanel panel_error;
+    SortByBirthButton errorButton;
+    public MyPanel_error(MyFrame frame){
+        this.frame=frame;
+        this.panel_error=new JPanel();
+        this.panel_error.setBounds(this.frame.getBounds());
+        this.panel_error.setLayout(null);
+        JLabel errorJLabel=new JLabel("出错啦！");
+        errorJLabel.setBounds(650,300,800,100);
+        errorJLabel.setFont(new Font("宋体",Font.BOLD,50));
+        errorJLabel.setForeground(Color.red);
+        this.panel_error.add(errorJLabel);
+        //按钮
+        errorButton=new SortByBirthButton(this.frame);
+        this.panel_error.add(errorButton.b_return);
+    }
+}
 //按钮类
 class InitButton extends JButton{
     JButton b_insert,b_search,b_del,b_relation,b_creatTime,b_modifyTime,b_sortByBirth,b_remind;
@@ -943,6 +965,12 @@ class MyActionListener implements ActionListener{
     MyFrame frame=null;
     public void actionPerformed(ActionEvent e){
         if(e.getActionCommand()=="插入"){
+            if(this.frame.T==0){
+                this.frame.myPanel_insert.fatherJTextArea.setEnabled(false);
+            }
+            else{
+                this.frame.myPanel_insert.fatherJTextArea.setEnabled(true);
+            }
             this.frame.container.remove(this.frame.myPanel_init.panel_init);
             this.frame.container.add(this.frame.myPanel_insert.panel_insert);
             this.frame.container.revalidate();
@@ -997,14 +1025,29 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="提交"){
             boolean alive;
+            boolean error=false;
+            int bday=-1,byear=-1,bmonth=-1;
             int dday=-1,dmonth=-1,dyear=-1;
             JavaGUI ctj=new JavaGUI();
-
             String father=this.frame.myPanel_insert.fatherJTextArea.getText();
             String name=this.frame.myPanel_insert.nameJTextArea.getText();
-            int byear=Integer.parseInt(this.frame.myPanel_insert.byearJTextArea.getText());
-            int bmonth=Integer.parseInt(this.frame.myPanel_insert.bmonthJTextArea.getText());
-            int bday=Integer.parseInt(this.frame.myPanel_insert.bdayJTextArea.getText());
+            try {
+                byear=Integer.parseInt(this.frame.myPanel_insert.byearJTextArea.getText());
+                bmonth=Integer.parseInt(this.frame.myPanel_insert.bmonthJTextArea.getText());
+                bday=Integer.parseInt(this.frame.myPanel_insert.bdayJTextArea.getText());
+            } catch (Exception ee) {
+                error=true;
+            }finally{
+                if(error)
+                {
+                    this.frame.container.remove(this.frame.myPanel_insert.panel_insert);
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    return;
+                }
+
+            }
             String address=this.frame.myPanel_insert.addressJTextArea.getText();
             
             if(this.frame.myPanel_insert.aliveButtonGroup.getSelection()==this.frame.myPanel_insert.aliveYesJRadioButton.getModel()){
@@ -1012,16 +1055,35 @@ class MyActionListener implements ActionListener{
             }
             else{
                 alive=false;
-                dyear=Integer.parseInt(this.frame.myPanel_insert.dyearJTextArea.getText());
-                dmonth=Integer.parseInt(this.frame.myPanel_insert.dmonthJTextArea.getText());
-                dday=Integer.parseInt(this.frame.myPanel_insert.ddayJTextArea.getText());
+                try {
+                    dyear=Integer.parseInt(this.frame.myPanel_insert.dyearJTextArea.getText());
+                    dmonth=Integer.parseInt(this.frame.myPanel_insert.dmonthJTextArea.getText());
+                    dday=Integer.parseInt(this.frame.myPanel_insert.ddayJTextArea.getText());
+                } catch (Exception ee) {
+                    error=true;
+                }finally{
+                    if(error)
+                {
+                    this.frame.container.remove(this.frame.myPanel_insert.panel_insert);
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    return;
+                }
+                }
             }
-            
-            this.frame.T=ctj.insert(this.frame.T, father, name, byear, bmonth, bday, alive, address, alive, dyear, dmonth, dday);
+            long TN=ctj.insert(this.frame.T, father, name, byear, bmonth, bday, alive, address, alive, dyear, dmonth, dday);
+            if(TN!=0)
+                this.frame.T=TN;
+            else{
+                this.frame.container.remove(this.frame.myPanel_insert.panel_insert);
+                this.frame.container.add(this.frame.myPanel_error.panel_error);
+                this.frame.container.revalidate();
+                this.frame.container.repaint();
+                return;
+            }
             this.frame.container.remove(this.frame.myPanel_insert.panel_insert);
             this.frame.container.add(this.frame.myPanel_init.panel_init);
-
-
             this.frame.container.revalidate();
             this.frame.container.repaint();
         }
@@ -1084,14 +1146,20 @@ class MyActionListener implements ActionListener{
             this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="依据名字搜索"){
-            
             JavaGUI.TNode T1;
             String name=this.frame.myPanel_searchByName.nameJTextArea.getText();
             JavaGUI ctj=new JavaGUI();
-
-            this.frame.TN=ctj.searchByName(this.frame.T, name);
-            
-            
+            long TN=ctj.searchByName(this.frame.T, name);
+            if(TN!=0){
+                this.frame.TN=TN;
+            }
+            else{
+                this.frame.container.removeAll();
+                this.frame.container.add(this.frame.myPanel_error.panel_error);
+                this.frame.container.revalidate();
+                this.frame.container.repaint();
+                return;
+            }
             T1=ctj.convertToTree(this.frame.TN);
             
             if(T1.parent==0){
@@ -1141,12 +1209,37 @@ class MyActionListener implements ActionListener{
             
         }
         else if(e.getActionCommand()=="依据生日搜索"){
+            boolean error=false;
             JavaGUI.TNode T1;
-            int byear=Integer.parseInt(this.frame.myPanel_searchByBirth.byearJTextArea.getText());
-            int bmonth=Integer.parseInt(this.frame.myPanel_searchByBirth.bmonthJTextArea.getText());
-            int bday=Integer.parseInt(this.frame.myPanel_searchByBirth.bdayJTextArea.getText());
+            int byear=-1,bmonth=-1,bday=-1;
+            try {
+                byear=Integer.parseInt(this.frame.myPanel_searchByBirth.byearJTextArea.getText());
+                bmonth=Integer.parseInt(this.frame.myPanel_searchByBirth.bmonthJTextArea.getText());
+                bday=Integer.parseInt(this.frame.myPanel_searchByBirth.bdayJTextArea.getText());
+            } catch (Exception ee) {
+                error=true;
+            }finally{
+                if(error){
+                    this.frame.container.removeAll();
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    return;
+                }
+            }
+            
             JavaGUI ctj=new JavaGUI();
-            this.frame.TN=ctj.searchByBirth(this.frame.T, byear, bmonth, bday);
+            long TN=ctj.searchByBirth(this.frame.T, byear, bmonth, bday);
+            if(TN!=0){
+                this.frame.TN=TN;
+            }
+            else{
+                this.frame.container.removeAll();
+                this.frame.container.add(this.frame.myPanel_error.panel_error);
+                this.frame.container.revalidate();
+                this.frame.container.repaint();
+                return;
+            }
             this.frame.container.add(this.frame.myPanel_information.panel_information);
             T1=ctj.convertToTree(this.frame.TN);
             if(T1.parent==0){
@@ -1276,9 +1369,28 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="创建"){
             JavaGUI ctj=new JavaGUI();
-            int year=Integer.parseInt(this.frame.myPanel_creatTime.yearJTextArea.getText());
-            int month=Integer.parseInt(this.frame.myPanel_creatTime.monthJTextArea.getText());
-            int day=Integer.parseInt(this.frame.myPanel_creatTime.dayJTextArea.getText());
+            int year=-1,month=-1,day=-1;
+            boolean error=false;
+            try {
+                year=Integer.parseInt(this.frame.myPanel_creatTime.yearJTextArea.getText());
+                month=Integer.parseInt(this.frame.myPanel_creatTime.monthJTextArea.getText());
+                day=Integer.parseInt(this.frame.myPanel_creatTime.dayJTextArea.getText());
+            } catch (Exception ee) {
+                error=true;
+            }finally{
+                if(error){
+                    this.frame.container.removeAll();
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    this.frame.myPanel_creatTime.yearJTextArea.setText("");
+                    this.frame.myPanel_creatTime.monthJTextArea.setText("");
+                    this.frame.myPanel_creatTime.dayJTextArea.setText("");
+
+                    return;
+                }
+            }
+            
             this.frame.Date=ctj.createTime(year, month, day);
             String time=year+"/"+month+"/"+day;
             this.frame.myPanel_init.time.setText(time);
@@ -1306,10 +1418,28 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="确认修改时间"){
             JavaGUI ctj=new JavaGUI();
-            int year=Integer.parseInt(this.frame.myPanel_modifyTime.yearJTextArea.getText());
-            int month=Integer.parseInt(this.frame.myPanel_modifyTime.monthJTextArea.getText());
-            int day=Integer.parseInt(this.frame.myPanel_modifyTime.dayJTextArea.getText());
+            int year=-1,month=-1,day=-1;
+            boolean error=false;
+            try {
+                year=Integer.parseInt(this.frame.myPanel_modifyTime.yearJTextArea.getText());
+                month=Integer.parseInt(this.frame.myPanel_modifyTime.monthJTextArea.getText());
+                day=Integer.parseInt(this.frame.myPanel_modifyTime.dayJTextArea.getText());
             this.frame.Date=ctj.modifyDate(this.frame.Date, year, month, day);
+            } catch (Exception ee) {
+                error=true;
+            }finally{
+                if(error){
+                    this.frame.container.removeAll();
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    this.frame.myPanel_modifyTime.yearJTextArea.setText("");
+                    this.frame.myPanel_modifyTime.monthJTextArea.setText("");
+                    this.frame.myPanel_modifyTime.dayJTextArea.setText("");
+                    return;
+                }
+            }
+            
             String time=year+"/"+month+"/"+day;
             this.frame.myPanel_init.time.setText(time);
             this.frame.myPanel_modifyTime.yearJTextArea.setText("");
