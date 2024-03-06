@@ -1303,14 +1303,28 @@ class MyActionListener implements ActionListener{
             this.frame.container.repaint();
         }
         else if(e.getActionCommand()=="确认"){
-            boolean alive;
-            int dday=-1,dmonth=-1,dyear=-1;
+            boolean alive,error=false;
+            int dday=-1,dmonth=-1,dyear=-1,byear=-1,bmonth=-1,bday=-1;
             JavaGUI ctj=new JavaGUI();
-
+            this.frame.myPanel_information.panel_information.remove(this.frame.myPanel_information.informationButton.b_confirm);
+            this.frame.myPanel_information.panel_information.add(this.frame.myPanel_information.informationButton.b_modify);
             String name=this.frame.myPanel_information.nameJTextArea.getText();
-            int byear=Integer.parseInt(this.frame.myPanel_information.byearJTextArea.getText());
-            int bmonth=Integer.parseInt(this.frame.myPanel_information.bmonthJTextArea.getText());
-            int bday=Integer.parseInt(this.frame.myPanel_information.bdayJTextArea.getText());
+            try {
+                byear=Integer.parseInt(this.frame.myPanel_information.byearJTextArea.getText());
+                bmonth=Integer.parseInt(this.frame.myPanel_information.bmonthJTextArea.getText());
+                bday=Integer.parseInt(this.frame.myPanel_information.bdayJTextArea.getText());
+            } catch (Exception ee) {
+                error=true;
+            }finally{
+                if(error){
+                    this.frame.container.removeAll();
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    return;
+                }
+            }
+            
             String address=this.frame.myPanel_information.addressJTextArea.getText();
             
             if(this.frame.myPanel_information.aliveYesJRadioButton.isSelected()){
@@ -1318,9 +1332,21 @@ class MyActionListener implements ActionListener{
             }
             else{
                 alive=false;
-                dyear=Integer.parseInt(this.frame.myPanel_information.dyearJTextArea.getText());
-                dmonth=Integer.parseInt(this.frame.myPanel_information.dmonthJTextArea.getText());
-                dday=Integer.parseInt(this.frame.myPanel_information.ddayJTextArea.getText());
+                try {
+                    dyear=Integer.parseInt(this.frame.myPanel_information.dyearJTextArea.getText());
+                    dmonth=Integer.parseInt(this.frame.myPanel_information.dmonthJTextArea.getText());
+                    dday=Integer.parseInt(this.frame.myPanel_information.ddayJTextArea.getText());
+                } catch (Exception ee) {
+                    error=true;
+                }finally{
+                    if(error){
+                        this.frame.container.removeAll();
+                        this.frame.container.add(this.frame.myPanel_error.panel_error);
+                        this.frame.container.revalidate();
+                        this.frame.container.repaint();
+                        return;
+                    }
+                }
             }
             this.frame.TN=ctj.modify(this.frame.TN, name, byear, bmonth, bday, alive, address, alive, dyear, dmonth, dday);
             this.frame.myPanel_information.panel_information.remove(this.frame.myPanel_information.informationButton.b_confirm);
