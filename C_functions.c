@@ -460,22 +460,74 @@ char* RemindBirth(Tree T, Date date) {
         return reminder;
     }
 }
+void SaveData(Tree T,FILE *fp){
+    if(T){
+        fprintf(fp,"%d ",(int)T->alive);
+        fprintf(fp,"%d ",T->depth);
+        fprintf(fp,"%d ",T->age_ratio);
+        fprintf(fp,"%s ",T->name);
+        fprintf(fp,"%d ",T->birth->year);
+        fprintf(fp,"%d ",T->birth->month);
+        fprintf(fp,"%d ",T->birth->day);
+        fprintf(fp,"%d ",(int)T->marriage);
+        fprintf(fp,"%s ",T->address);
+        if(!T->alive){
+            fprintf(fp,"%d ",T->death->year);
+            fprintf(fp,"%d ",T->death->month);
+            fprintf(fp,"%d ",T->death->day);
+            
+        }
+        fprintf(fp,"\n");
+        SaveData(T->child,fp);
+        SaveData(T->subbro,fp);
+    }
+    else
+        fprintf(fp,"\n");
 
-int main() {
-    Date Today = (Date)malloc(sizeof(struct Time));
-    Today = CreateTime(2024, 1, 8);
-    printf("%d年%d月%d日\n", Today->year, Today->month, Today->day);
-    Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
-    Insert(T, "祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false, 2011, 1, 2);
-    Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
-    Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
-    Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
-    Insert(T, "小明2", "阿聪1", 1990, 1, 8, true, "翻斗花园", true, 2019, 1, 6);
-    Insert(T, "小明2", "阿聪2", 1991, 1, 8, true, "翻斗花园", true, 2019, 1, 7);
-    Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true, 0, 0, 0);
-    printf("%s", RemindBirth(T, Today));
-    printf("%s", Relation(T, "祖先", "狗蛋"));
 }
+void Save(Tree T){
+    FILE  *fp=fopen("data.txt","w");
+    SaveData(T,fp);
+    fclose(fp);
+    return;
+}
+
+Tree Load(){
+    FILE *fp=fopen("data.txt","r");
+    char line[1024];
+    if(fp==NULL)
+        return;
+    int depth, age_ratio;
+    char* name;
+    int birth_year, birth_month, birth_day;
+    int marriage,alive;
+    char* address;
+    int death_year, death_month, death_day;
+    Tree T;
+    while(fgets(line,1024,fp)){
+        if(line[1]==1){
+            sscanf(line,"%d %d %d %s %d %d %d %d %s",&alive,&depth,&)
+        }
+        else if()
+    }
+
+}
+
+// int main() {
+//     Date Today = (Date)malloc(sizeof(struct Time));
+//     Today = CreateTime(2024, 1, 8);
+//     printf("%d年%d月%d日\n", Today->year, Today->month, Today->day);
+//     Tree T = Insert(NULL, "", "祖先", 1950, 1, 1, true, "翻斗花园", false, 2005, 1, 1);
+//     Insert(T, "祖先", "小明1", 1970, 1, 2, true, "翻斗花园", false, 2011, 1, 2);
+//     Insert(T, "祖先", "小明2", 1971, 1, 3, true, "翻斗花园", false, 2012, 1, 3);
+//     Insert(T, "小明1", "阿华1", 1990, 1, 4, true, "翻斗花园", false, 2019, 1, 4);
+//     Insert(T, "小明1", "阿华2", 1991, 1, 5, true, "翻斗花园", false, 2019, 1, 5);
+//     Insert(T, "小明2", "阿聪1", 1990, 1, 8, true, "翻斗花园", true, 2019, 1, 6);
+//     Insert(T, "小明2", "阿聪2", 1991, 1, 8, true, "翻斗花园", true, 2019, 1, 7);
+//     Insert(T, "阿华1", "狗蛋", 2000, 1, 8, true, "翻斗花园", true, 0, 0, 0);
+//     printf("%s", RemindBirth(T, Today));
+//     printf("%s", Relation(T, "祖先", "狗蛋"));
+// }
 
 
 //
@@ -605,4 +657,8 @@ JNIEXPORT void JNICALL Java_JavaGUI_freeTree(JNIEnv* env, jobject obj, jlong T) 
 
 JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth(JNIEnv* env, jobject obj, jlong T, jlong date) {
    return (*env)->NewStringUTF(env, RemindBirth((Tree)T, (Date)date));
+}
+JNIEXPORT void JNICALL Java_JavaGUI_save(JNIEnv* env,jobject obj,jlong T){
+    Save((Tree)T);
+    return;
 }

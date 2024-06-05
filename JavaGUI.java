@@ -66,6 +66,7 @@ public class JavaGUI {
     public native long delete(long T,String name);
     public native long createTime(int year,int month,int day);
     public native void freeTree(long T);
+    public native void save(long T);
 
     //主函数
     public static void main(String[] args) {
@@ -155,6 +156,8 @@ class MyPanel_graph extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        JavaGUI ctj=new JavaGUI();
+        ctj.save(this.frame.T);
         drawTree(g,this.frame.T);
         //初始化
         for(int i=0;i<99;i++){
