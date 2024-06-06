@@ -67,10 +67,13 @@ public class JavaGUI {
     public native long createTime(int year,int month,int day);
     public native void freeTree(long T);
     public native void save(long T);
+    public native long load();
 
     //主函数
     public static void main(String[] args) {
-        long T=0;
+        JavaGUI ctj=new JavaGUI();
+        long T=ctj.load();
+        System.out.println(T);
         new MyFrame(T);
     }
 }

@@ -342,7 +342,7 @@ char* SortByBirth(Tree T) {
     int i, j;
     int num = Count(T);
     if (num == 0) {
-        return;
+        return "";
     }
     char* str = (char*)malloc(4 * num * sizeof(char));
     Tree* Sortarry = (Tree*)malloc(num * sizeof(Tree));
@@ -458,14 +458,17 @@ char* RemindBirth(Tree T, Date date) {
 }
 void SaveData(Tree T, FILE* fp) {
     if (T) {
-        fprintf(fp, "%d ", (int)T->alive);
+        fprintf(fp, "%d ", (int)(T->alive));
         fprintf(fp, "%s ", T->name);
         fprintf(fp, "%d ", T->birth->year);
         fprintf(fp, "%d ", T->birth->month);
         fprintf(fp, "%d ", T->birth->day);
-        fprintf(fp, "%d ", (int)T->marriage);
+        fprintf(fp, "%d ", (int)(T->marriage));
         fprintf(fp, "%s ", T->address);
-        fprintf(fp, "%s", T->parent->name);
+        if(T->parent)
+            fprintf(fp, "%s", T->parent->name);
+        else
+            fprintf(fp,"");
         if (!T->alive) {
             fprintf(fp, "%d ", T->death->year);
             fprintf(fp, "%d ", T->death->month);
@@ -476,8 +479,7 @@ void SaveData(Tree T, FILE* fp) {
         SaveData(T->child, fp);
         SaveData(T->subbro, fp);
     }
-    else
-        fprintf(fp, "\n");
+
 
 }
 
@@ -491,38 +493,43 @@ void Save(Tree T) {
     fclose(fp);
 }
 
-Tree LoadData(Tree LoadT, FILE* fp) {
+Tree LoadData(FILE* fp) {
     char line[1024];
-    if (fgets(line, 1024, fp) == NULL || line[0] == '\n') {
-        return NULL;
-    }
-    char* name;
+    // if (fgets(line, 1024, fp) == NULL || line[0] == '\n') {
+    //     return NULL;
+    // }
+    Tree LoadT=NULL;
+    char name[50];
     const char* parent_name;
     int birth_year, birth_month, birth_day;
     int marriage, alive;
     char* address;
-    int death_year, death_month, death_day;
+    int death_year=-1, death_month=-1, death_day=-1;
     while (fgets(line, 1024, fp)) {
+        printf("%s",line);
+        line[strcspn(line, "\n")] = 0;
         if (line[0] == 1) {
-            sscanf(line, "%d %s %d %d %d %d %s %s", &alive, &name, &birth_year, &birth_month, &birth_day, &marriage, &address, &parent_name);
+            sscanf(line, "%d %s %d %d %d %d %s %s", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address, parent_name);
         }
         else if (line[0] == 0) {
-            sscanf(line, "%d %s %d %d %d %d %s &s %d %d %d", &alive, &name, &birth_year, &birth_month, &birth_day, &marriage, &address, &parent_name, &death_year, &death_month, &death_day);
+            sscanf(line, "%d %s %d %d %d %d %s %s %d %d %d", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address, parent_name, &death_year, &death_month, &death_day);
         }
-        Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, marriage, address, alive, death_year, death_month, death_day);
+        printf("%d %s %d %d %d %d %s %s %d %d %d", alive, name, birth_year, birth_month, birth_day, marriage, address, parent_name, death_year, death_month, death_day);
+        LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
     }
+    
     return LoadT;
 }
 
-Tree Load(FILE* fp) {
-    FILE* fp = fopen("data.txt", "w");
+Tree Load() {
+    FILE* fp = fopen("data.txt", "r");
     if (fp == NULL) {
         printf("文件打开失败\n");
-        return;
+        return NULL;
     }
-    Tree LoadT = LoadData(LoadT, fp);
+    Tree T = LoadData(fp);
     fclose(fp);
-    return LoadT;
+    return T;
 }
 
 // int main() {
@@ -673,4 +680,8 @@ JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth(JNIEnv* env, jobject obj, jlo
 JNIEXPORT void JNICALL Java_JavaGUI_save(JNIEnv* env, jobject obj, jlong T) {
     Save((Tree)T);
     return;
+}
+JNIEXPORT jlong JNICALL Java_JavaGUI_load(JNIEnv* env,jobject obj){
+    Tree T=Load();
+    return (jlong)T;
 }
