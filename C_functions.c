@@ -500,22 +500,51 @@ Tree LoadData(FILE* fp) {
     // }
     Tree LoadT=NULL;
     char name[50];
-    const char* parent_name;
+    char parent_name[50]="";
     int birth_year, birth_month, birth_day;
     int marriage, alive;
-    char* address;
+    char address[50];
     int death_year=-1, death_month=-1, death_day=-1;
+    int i=0;
     while (fgets(line, 1024, fp)) {
-        printf("%s",line);
-        line[strcspn(line, "\n")] = 0;
-        if (line[0] == 1) {
+
+        // if(!strcmp(line,"\n")||!strcmp(line,"")){
+        //     printf("999");
+        //     continue;
+        // }
+        
+        if(!i){
+            if (line[0] == '1') {
+
+            sscanf(line, "%d %s %d %d %d %d %s", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address);
+            
+            LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
+        }
+        else if (line[0] == '0') {
+
+            sscanf(line, "%d %s %d %d %d %d %s  %d %d %d", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address, &death_year, &death_month, &death_day);
+            
+            LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
+        }
+        }
+        else{
+            if (line[0] == '1') {
+
+
             sscanf(line, "%d %s %d %d %d %d %s %s", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address, parent_name);
+            printf("%d %s %d %d %d %d %s %s %d %d %d ", alive, name, birth_year, birth_month, birth_day, marriage, address, parent_name, death_year, death_month, death_day);
+            LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
         }
-        else if (line[0] == 0) {
+        else if (line[0] == '0') {
+ 
             sscanf(line, "%d %s %d %d %d %d %s %s %d %d %d", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address, parent_name, &death_year, &death_month, &death_day);
+            printf("%d %s %d %d %d %d %s %s %d %d %d ", alive, name, birth_year, birth_month, birth_day, marriage, address, parent_name, death_year, death_month, death_day);
+            LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
         }
-        printf("%d %s %d %d %d %d %s %s %d %d %d", alive, name, birth_year, birth_month, birth_day, marriage, address, parent_name, death_year, death_month, death_day);
-        LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
+        }
+        i++;    
+        
+        
     }
     
     return LoadT;

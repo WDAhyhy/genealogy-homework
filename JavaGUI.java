@@ -73,7 +73,6 @@ public class JavaGUI {
     public static void main(String[] args) {
         JavaGUI ctj=new JavaGUI();
         long T=ctj.load();
-        System.out.println(T);
         new MyFrame(T);
     }
 }
