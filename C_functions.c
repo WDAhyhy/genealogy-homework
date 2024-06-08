@@ -313,19 +313,24 @@ int Count(Tree T) {
 
 //将树存进数组准备排序  
 // (头结点，结构数组，已排序下标，总数)  返回->数组
-Tree* AddInArry(Tree T, Tree* arry, int index, int num) {
+Tree* AddInArry(Tree T, Tree* arry, int* index, int num) {
+    printf("%d\n",*index);
     Tree* arry2;
-    if (!T)
+    if (!T){
         return NULL;
-    arry[index] = T;
-    arry2 = AddInArry(T->subbro, arry, ++index, num);
+    }
+        
+    arry[*index] = T;
+    (*index)++;
+    puts(T->name);
+    arry2 = AddInArry(T->subbro, arry, index, num);
     if (arry2) {
         arry = arry2;
-        index++;
     }
     arry2 = AddInArry(T->child, arry, index, num);
-    if (arry2)
+    if (arry2){
         arry = arry2;
+    }
     return arry;
 }
 
@@ -341,12 +346,19 @@ void Swap(Tree* T1, Tree* T2) {
 char* SortByBirth(Tree T) {
     int i, j;
     int num = Count(T);
+    int value=0;
+    int* index=&value;
+    printf("\n%d\n",num);
     if (num == 0) {
         return "";
     }
-    char* str = (char*)malloc(4 * num * sizeof(char));
+    char* str = (char*)malloc(5 * num * sizeof(char));
     Tree* Sortarry = (Tree*)malloc(num * sizeof(Tree));
-    AddInArry(T, Sortarry, 0, num);
+    printf("%d\n",*index);
+    Sortarry=AddInArry(T, Sortarry,index, num);
+    // for(i=0;i<num;i++)
+    //     puts(Sortarry[i]->name);
+    // printf("over\n");
     //简单选择排序
     for (i = 0; i < num; i++) {
         for (j = i; j < num; j++) {
