@@ -466,7 +466,7 @@ void SaveData(Tree T, FILE* fp) {
         fprintf(fp, "%d ", (int)(T->marriage));
         fprintf(fp, "%s ", T->address);
         if(T->parent)
-            fprintf(fp, "%s", T->parent->name);
+            fprintf(fp, "%s ", T->parent->name);
         else
             fprintf(fp,"");
         if (!T->alive) {

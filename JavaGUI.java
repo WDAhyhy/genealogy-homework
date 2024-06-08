@@ -976,6 +976,15 @@ class MyActionListener implements ActionListener{
             else{
                 this.frame.myPanel_insert.fatherJTextArea.setEnabled(true);
             }
+            this.frame.myPanel_insert.addressJTextArea.setText("");
+            this.frame.myPanel_insert.bdayJTextArea.setText("");
+            this.frame.myPanel_insert.bmonthJTextArea.setText("");
+            this.frame.myPanel_insert.byearJTextArea.setText("");
+            this.frame.myPanel_insert.ddayJTextArea.setText("");
+            this.frame.myPanel_insert.dmonthJTextArea.setText("");
+            this.frame.myPanel_insert.dyearJTextArea.setText("");
+            this.frame.myPanel_insert.fatherJTextArea.setText("");
+            this.frame.myPanel_insert.nameJTextArea.setText("");
             this.frame.container.remove(this.frame.myPanel_init.panel_init);
             this.frame.container.add(this.frame.myPanel_insert.panel_insert);
             this.frame.container.revalidate();
@@ -1021,8 +1030,14 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="提醒生日"){
             JavaGUI ctj=new JavaGUI();
+            if(this.frame.Date==0){
+                    this.frame.container.removeAll();
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    return;
+            }
             this.frame.myPanel_remindBirth.remindJLabel.setText(ctj.remindBirth(this.frame.T, this.frame.Date));
-            
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_remindBirth.panel_remindBirth);
             this.frame.container.revalidate();
