@@ -314,23 +314,25 @@ int Count(Tree T) {
 //将树存进数组准备排序  
 // (头结点，结构数组，已排序下标，总数)  返回->数组
 Tree* AddInArry(Tree T, Tree* arry, int* index, int num) {
-    printf("%d\n",*index);
     Tree* arry2;
     if (!T){
+        
         return NULL;
     }
         
     arry[*index] = T;
     (*index)++;
-    puts(T->name);
     arry2 = AddInArry(T->subbro, arry, index, num);
     if (arry2) {
         arry = arry2;
+
     }
     arry2 = AddInArry(T->child, arry, index, num);
     if (arry2){
         arry = arry2;
+ 
     }
+    
     return arry;
 }
 
@@ -348,17 +350,12 @@ char* SortByBirth(Tree T) {
     int num = Count(T);
     int value=0;
     int* index=&value;
-    printf("\n%d\n",num);
     if (num == 0) {
         return "";
     }
     char* str = (char*)malloc(5 * num * sizeof(char));
     Tree* Sortarry = (Tree*)malloc(num * sizeof(Tree));
-    printf("%d\n",*index);
     Sortarry=AddInArry(T, Sortarry,index, num);
-    // for(i=0;i<num;i++)
-    //     puts(Sortarry[i]->name);
-    // printf("over\n");
     //简单选择排序
     for (i = 0; i < num; i++) {
         for (j = i; j < num; j++) {
@@ -544,13 +541,13 @@ Tree LoadData(FILE* fp) {
 
 
             sscanf(line, "%d %s %d %d %d %d %s %s", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address, parent_name);
-            printf("%d %s %d %d %d %d %s %s %d %d %d ", alive, name, birth_year, birth_month, birth_day, marriage, address, parent_name, death_year, death_month, death_day);
+            
             LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
         }
         else if (line[0] == '0') {
  
             sscanf(line, "%d %s %d %d %d %d %s %s %d %d %d", &alive, name, &birth_year, &birth_month, &birth_day, &marriage, address, parent_name, &death_year, &death_month, &death_day);
-            printf("%d %s %d %d %d %d %s %s %d %d %d ", alive, name, birth_year, birth_month, birth_day, marriage, address, parent_name, death_year, death_month, death_day);
+            
             LoadT=Insert(LoadT, parent_name, name, birth_year, birth_month, birth_day, (bool)marriage, address, (bool)alive, death_year, death_month, death_day);
         }
         }

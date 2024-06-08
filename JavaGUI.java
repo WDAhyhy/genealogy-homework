@@ -660,8 +660,8 @@ class MyPanel_sortByBirth extends JPanel{
         this.panel_sortByBirth.setBounds(this.frame.getBounds());
         this.panel_sortByBirth.setLayout(null);
         this.sortByBirthJLabel=new JLabel("");
-        this.sortByBirthJLabel.setBounds(50,50,800,300);
-        this.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,30));
+        this.sortByBirthJLabel.setBounds(20,20,1500,300);
+        this.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,15));
         JLabel aJLabel=new JLabel("按生日排序，从大到小：");
         aJLabel.setBounds(0,0,800,100);
         aJLabel.setFont(new Font("宋体",Font.BOLD,30));
@@ -1023,6 +1023,7 @@ class MyActionListener implements ActionListener{
         else if(e.getActionCommand()=="排序"){
             JavaGUI ctj=new JavaGUI();
             this.frame.myPanel_sortByBirth.sortByBirthJLabel.setText(ctj.sortByBirth(this.frame.T));
+            this.frame.myPanel_sortByBirth.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,1900/(this.frame.myPanel_sortByBirth.sortByBirthJLabel.getText().length())));
             this.frame.container.removeAll();
             this.frame.container.add(this.frame.myPanel_sortByBirth.panel_sortByBirth);
             this.frame.container.revalidate();
