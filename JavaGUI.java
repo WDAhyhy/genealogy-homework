@@ -1022,13 +1022,27 @@ class MyActionListener implements ActionListener{
         }
         else if(e.getActionCommand()=="排序"){
             JavaGUI ctj=new JavaGUI();
-            this.frame.myPanel_sortByBirth.sortByBirthJLabel.setText(ctj.sortByBirth(this.frame.T));
-            this.frame.myPanel_sortByBirth.sortByBirthJLabel.setBounds(20,20,this.frame.myPanel_sortByBirth.panel_sortByBirth.getWidth(),this.frame.myPanel_sortByBirth.panel_sortByBirth.getHeight());
-            this.frame.myPanel_sortByBirth.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,(this.frame.myPanel_sortByBirth.panel_sortByBirth.getWidth()+300)/(this.frame.myPanel_sortByBirth.sortByBirthJLabel.getText().length())));
-            this.frame.container.removeAll();
-            this.frame.container.add(this.frame.myPanel_sortByBirth.panel_sortByBirth);
-            this.frame.container.revalidate();
-            this.frame.container.repaint();
+            boolean error=false;
+            try{
+                this.frame.myPanel_sortByBirth.sortByBirthJLabel.setText(ctj.sortByBirth(this.frame.T));
+                this.frame.myPanel_sortByBirth.sortByBirthJLabel.setBounds(20,20,this.frame.myPanel_sortByBirth.panel_sortByBirth.getWidth(),this.frame.myPanel_sortByBirth.panel_sortByBirth.getHeight());
+                this.frame.myPanel_sortByBirth.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,(this.frame.myPanel_sortByBirth.panel_sortByBirth.getWidth()+300)/(this.frame.myPanel_sortByBirth.sortByBirthJLabel.getText().length())));
+                this.frame.container.removeAll();
+                this.frame.container.add(this.frame.myPanel_sortByBirth.panel_sortByBirth);
+                this.frame.container.revalidate();
+                this.frame.container.repaint();
+            }catch(Exception ee){
+                error=true;
+            }finally{
+                if(error){
+                    this.frame.container.removeAll();
+                    this.frame.container.add(this.frame.myPanel_error.panel_error);
+                    this.frame.container.revalidate();
+                    this.frame.container.repaint();
+                    return;
+                }
+            }
+            
         }
         else if(e.getActionCommand()=="提醒生日"){
             JavaGUI ctj=new JavaGUI();
