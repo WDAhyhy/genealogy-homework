@@ -313,29 +313,39 @@ int Count(Tree T) {
 
 //将树存进数组准备排序  
 // (头结点，结构数组，已排序下标，总数)  返回->数组
-Tree* AddInArry(Tree T, Tree* arry, int* index, int num) {
+// Tree* AddInArry(Tree T, Tree* arry, int* index, int num) {
+//     Tree* arry2;
+//     if (!T){
+        
+//         return NULL;
+//     }
+        
+//     arry[*index] = T;
+//     (*index)++;
+//     arry2 = AddInArry(T->subbro, arry, index, num);
+//     if (arry2) {
+//         arry = arry2;
+
+//     }
+//     arry2 = AddInArry(T->child, arry, index, num);
+//     if (arry2){
+//         arry = arry2;
+ 
+//     }
+    
+//     return arry;
+// }
+void AddInArry(Tree T, Tree* arry, int* index, int num) {
     Tree* arry2;
     if (!T){
-        
-        return NULL;
+        return ;
     }
-        
     arry[*index] = T;
     (*index)++;
-    arry2 = AddInArry(T->subbro, arry, index, num);
-    if (arry2) {
-        arry = arry2;
-
-    }
-    arry2 = AddInArry(T->child, arry, index, num);
-    if (arry2){
-        arry = arry2;
- 
-    }
-    
-    return arry;
+    AddInArry(T->subbro, arry, index, num);
+    AddInArry(T->child, arry, index, num);
+    return ;
 }
-
 //交换
 void Swap(Tree* T1, Tree* T2) {
     Tree T3 = *T1;
@@ -351,11 +361,12 @@ char* SortByBirth(Tree T) {
     int value=0;
     int* index=&value;
     if (num == 0) {
-        return "";
+        return NULL;
     }
-    char* str = (char*)malloc(5 * num * sizeof(char));
+    char* str = (char*)malloc(10 * num * sizeof(char));
     Tree* Sortarry = (Tree*)malloc(num * sizeof(Tree));
-    Sortarry=AddInArry(T, Sortarry,index, num);
+    AddInArry(T, Sortarry,index, num);
+    printf("6");
     //简单选择排序
     for (i = 0; i < num; i++) {
         for (j = i; j < num; j++) {
@@ -717,7 +728,7 @@ JNIEXPORT jstring JNICALL Java_JavaGUI_remindBirth(JNIEnv* env, jobject obj, jlo
 }
 JNIEXPORT void JNICALL Java_JavaGUI_save(JNIEnv* env, jobject obj, jlong T) {
     Save((Tree)T);
-    return;
+
 }
 JNIEXPORT jlong JNICALL Java_JavaGUI_load(JNIEnv* env,jobject obj){
     Tree T=Load();
