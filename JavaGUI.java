@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 
 
@@ -180,8 +179,9 @@ class MyPanel_graph extends JPanel{
         this.head=AddQ(head, T,x1);
         //遍历计算一层中结点个数
         Count(T);
-        
+        //入队时画画矩形，出队前画线
         while (this.head!=null) {
+            //获取头节点的子节点
             CT=ctj.convertToTree(this.head.TN).child;
             x1=this.head.x;
             //画图
@@ -190,6 +190,7 @@ class MyPanel_graph extends JPanel{
                 this.head=AddQ(head, CT,x2);
                 this.num[this.depth]++;
                 //20 20
+                //画线
                 g.drawLine(x1+20, 30+(this.depth-2)*100, x2+20,10+(this.depth-1)*100);
                 CT=ctj.convertToTree(CT).subbro;
             }
@@ -206,7 +207,9 @@ class MyPanel_graph extends JPanel{
         this.space[TN.depth]=this.getWidth()/this.arr[TN.depth];
 
         g.setColor(Color.black);
+        //画矩形
         g.drawRect(((((this.num[TN.depth]+1)+this.num[TN.depth])*this.space[TN.depth])/2)-20,10+(TN.depth-1)*100,40,20);
+        //写文字
         g.drawString(TN.name, ((((this.num[TN.depth]+1)+this.num[TN.depth])*this.space[TN.depth])/2)-17, 25+(TN.depth-1)*100);
         //返回x坐标
         return ((((this.num[TN.depth]+1)+this.num[TN.depth])*this.space[TN.depth])/2)-20;
@@ -1026,7 +1029,7 @@ class MyActionListener implements ActionListener{
             try{
                 this.frame.myPanel_sortByBirth.sortByBirthJLabel.setText(ctj.sortByBirth(this.frame.T));
                 this.frame.myPanel_sortByBirth.sortByBirthJLabel.setBounds(20,20,this.frame.myPanel_sortByBirth.panel_sortByBirth.getWidth(),this.frame.myPanel_sortByBirth.panel_sortByBirth.getHeight());
-                this.frame.myPanel_sortByBirth.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,(this.frame.myPanel_sortByBirth.panel_sortByBirth.getWidth())/(this.frame.myPanel_sortByBirth.sortByBirthJLabel.getText().length())));
+                this.frame.myPanel_sortByBirth.sortByBirthJLabel.setFont(new Font("宋体",Font.BOLD,((this.frame.myPanel_sortByBirth.panel_sortByBirth.getWidth())/(this.frame.myPanel_sortByBirth.sortByBirthJLabel.getText().length()))));
                 this.frame.container.removeAll();
                 this.frame.container.add(this.frame.myPanel_sortByBirth.panel_sortByBirth);
                 this.frame.container.revalidate();
@@ -1042,7 +1045,6 @@ class MyActionListener implements ActionListener{
                     return;
                 }
             }
-            
         }
         else if(e.getActionCommand()=="提醒生日"){
             JavaGUI ctj=new JavaGUI();
