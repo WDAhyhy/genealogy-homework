@@ -105,7 +105,7 @@ Tree SearchByBirth(Tree T, Date birth) {
         if (SearchByBirth(T->child, birth))
             return(SearchByBirth(T->child, birth));
         if (SearchByBirth(T->subbro, birth))
-            return(SearchByBirth(T->child, birth));
+            return(SearchByBirth(T->subbro, birth));
         return NULL;
     }
 }
